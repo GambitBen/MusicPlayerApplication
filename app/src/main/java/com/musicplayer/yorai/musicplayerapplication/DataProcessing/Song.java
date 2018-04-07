@@ -10,6 +10,8 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Song {
 
@@ -27,6 +29,7 @@ public class Song {
         title = songTitle;
         artist = songArtist;
         File mp3f = new File(path);
+        //Path mp3f2 = Paths.get(path);
         try {
             mp3file = new Mp3File(mp3f);
             if (mp3file.hasId3v2Tag()) {

@@ -20,27 +20,23 @@ public class FileWrapper {
 	protected FileWrapper() {
 	}
 
-	@RequiresApi(api = Build.VERSION_CODES.O)
 	public FileWrapper(String filename) throws IOException {
 		this.path = Paths.get(filename);
 		init();
 	}
 
-	@RequiresApi(api = Build.VERSION_CODES.O)
 	public FileWrapper(File file) throws IOException {
 		if (file == null) throw new NullPointerException();
 		this.path = Paths.get(file.getPath());
 		init();
 	}
 
-	@RequiresApi(api = Build.VERSION_CODES.O)
 	public FileWrapper(Path path) throws IOException {
 		if (path == null) throw new NullPointerException();
 		this.path = path;
 		init();
 	}
 
-	@RequiresApi(api = Build.VERSION_CODES.O)
 	private void init() throws IOException {
 		if (!Files.exists(path)) throw new FileNotFoundException("File not found " + path);
 		if (!Files.isReadable(path)) throw new IOException("File not readable");

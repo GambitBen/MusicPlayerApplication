@@ -112,7 +112,8 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         ContentResolver contentResolver = getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = contentResolver.query(musicUri, null, null, null, null);
-
+        Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor.moveToFirst() "+musicCursor.moveToFirst());
+        Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor!=null "+(musicCursor!=null));
         if(musicCursor!=null && musicCursor.moveToFirst()){
             //get columns
             int titleColumn = musicCursor.getColumnIndex
@@ -124,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
             int location = musicCursor.getColumnIndex
                     (MediaStore.Audio.Media.DATA);
             //add songs to list
+            Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: here2");
             do {
                 String thisPath = musicCursor.getString(location);
                 Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thiId="+thisPath);
