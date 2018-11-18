@@ -28,10 +28,20 @@ public class Song {
         id = songID;
         title = songTitle;
         artist = songArtist;
-        File mp3f = new File(path);
+        mp3file = null;
+        //File mp3f = new File(path);
         //Path mp3f2 = Paths.get(path);
         try {
-            mp3file = new Mp3File(mp3f);
+            mp3file = new Mp3File(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UnsupportedTagException e) {
+            e.printStackTrace();
+        } catch (InvalidDataException e) {
+            e.printStackTrace();
+        }
+        if (mp3file != null)
+        {
             if (mp3file.hasId3v2Tag()) {
                 id3v2Tag = mp3file.getId3v2Tag();
             }
@@ -49,13 +59,9 @@ public class Song {
                 }
             }
             mp3file.setId3v2Tag(id3v2Tag);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnsupportedTagException e) {
-            e.printStackTrace();
-        } catch (InvalidDataException e) {
-            e.printStackTrace();
         }
+
+
     }
 
     public String getPath(){return path;}

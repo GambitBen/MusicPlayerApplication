@@ -14,14 +14,12 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,7 +64,8 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
 
     public static MusicController controller;
 
-    private boolean paused=false, playbackPaused=false;
+    private boolean mediaPlayerPaused = false;
+    private boolean playbackPaused = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,23 +83,19 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         if (songDatabase == null){
             songDatabase = new ArrayList<Song>();
             getSongList();
-            Log.d("!!!!!!!!!!!!!!!!!!!!", "onCreate: getSongList() finished");
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        Log.d("!!!!!!!!!!!!!!!!!!!!", "onCreate: mSectionsPagerAdapter");
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        Log.d("!!!!!!!!!!!!!!!!!!!!", "onCreate: setAdapter");
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        Log.d("!!!!!!!!!!!!!!!!!!!!", "onCreate: setupWithViewPager");
 
         currentPlaylist = new ArrayList<Song>();
 
@@ -112,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         ContentResolver contentResolver = getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = contentResolver.query(musicUri, null, null, null, null);
-        Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor.moveToFirst() "+musicCursor.moveToFirst());
-        Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor!=null "+(musicCursor!=null));
+        //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor.moveToFirst() "+musicCursor.moveToFirst());
+        //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor!=null "+(musicCursor!=null));
         if(musicCursor!=null && musicCursor.moveToFirst()){
             //get columns
             int titleColumn = musicCursor.getColumnIndex
@@ -125,10 +120,9 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
             int location = musicCursor.getColumnIndex
                     (MediaStore.Audio.Media.DATA);
             //add songs to list
-            Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: here2");
             do {
                 String thisPath = musicCursor.getString(location);
-                Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thiId="+thisPath);
+                //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thiId="+thisPath);
                 long thisId = musicCursor.getLong(idColumn);
                 String thisTitle = musicCursor.getString(titleColumn);
                 String thisArtist = musicCursor.getString(artistColumn);
@@ -169,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
     }
 
     public void songPicked(View view){
+        pause();
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
         if(playbackPaused){
@@ -201,15 +196,15 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
     @Override
     protected void onPause(){
         super.onPause();
-        paused=true;
+        mediaPlayerPaused =true;
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        if(paused){
+        if(mediaPlayerPaused){
             setController();
-            paused=false;
+            mediaPlayerPaused =false;
         }
     }
 

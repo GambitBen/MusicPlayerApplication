@@ -21,6 +21,7 @@ public class FileWrapper {
 	}
 
 	public FileWrapper(String filename) throws IOException {
+
 		this.path = Paths.get(filename);
 		init();
 	}

@@ -6,4 +6,6 @@
 
     <color name="text">#FFFFFF</color>
     <color name="background">#555555</color>
+
+    <color name="grey_bg">#F7F7F7</color>
 </resources>
