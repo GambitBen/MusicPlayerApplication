@@ -112,7 +112,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void onPrepared(MediaPlayer mediaPlayer) {
         //start playback
         mediaPlayer.start();
-        MainActivity.controller.show();
+        //MainActivity.controller.show();
 
         Intent notIntent = new Intent(this, MainActivity.class);
         notIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

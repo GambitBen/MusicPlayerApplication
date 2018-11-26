@@ -6,7 +6,7 @@ import android.widget.MediaController;
 
 import com.musicplayer.yorai.musicplayerapplication.MainActivity.MainActivity;
 
-
+// DELETE THIS CLASS
 public class MusicController extends MediaController {
 
     Context context;

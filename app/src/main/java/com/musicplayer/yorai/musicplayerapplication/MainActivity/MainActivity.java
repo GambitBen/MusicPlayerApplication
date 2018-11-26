@@ -38,7 +38,7 @@ import com.musicplayer.yorai.musicplayerapplication.R;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements MediaPlayerControl {
+public class MainActivity extends AppCompatActivity {//implements MediaPlayerControl {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -62,10 +62,29 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
     private Intent playIntent;
     private boolean musicBound=false;
 
-    public static MusicController controller;
+    //public static MusicController controller;
 
     private boolean mediaPlayerPaused = false;
     private boolean playbackPaused = false;
+
+    //connect to the service
+    private ServiceConnection musicConnection = new ServiceConnection(){
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MusicBinder binder = (MusicBinder)service;
+            //get service
+            musicSrv = binder.getService();
+            //pass list
+            musicSrv.setList(currentPlaylist);
+            musicBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
             }
         }
 
+        //SQLlite - use another thread
         if (songDatabase == null){
             songDatabase = new ArrayList<Song>();
             getSongList();
@@ -99,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
 
         currentPlaylist = new ArrayList<Song>();
 
-        setController();
+        //setController();
     }
 
     public void getSongList() {
@@ -133,25 +153,6 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         }
     }
 
-    //connect to the service
-    private ServiceConnection musicConnection = new ServiceConnection(){
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MusicBinder binder = (MusicBinder)service;
-            //get service
-            musicSrv = binder.getService();
-            //pass list
-            musicSrv.setList(currentPlaylist);
-            musicBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            musicBound = false;
-        }
-    };
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -163,14 +164,14 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
     }
 
     public void songPicked(View view){
-        pause();
+        //pause();
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
         if(playbackPaused){
-            setController();
+            //setController();
             playbackPaused=false;
         }
-        controller.show(0);
+        //controller.show(0);
     }
 
     public void artistPicked(View view){
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
     protected void onResume(){
         super.onResume();
         if(mediaPlayerPaused){
-            setController();
+            //setController();
             mediaPlayerPaused =false;
         }
     }
@@ -211,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
     @Override
     protected void onStop() {
         super.onStop();
-        controller.hide();
+        //controller.hide();
     }
 
     public void onBackPressed() {
@@ -223,109 +224,109 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
     ///////////////////////////////////////MEDIA PLAYER CONTROL/////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void setController(){
-        //set the controller up
-        if(controller == null)
-            controller = new MusicController(this);
-        else
-            controller.invalidate();
-        controller.setPrevNextListeners(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playNext();
-            }
-        }, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playPrev();
-            }
-        });
-        controller.setMediaPlayer(this);
-        controller.setAnchorView(findViewById(R.id.container));
-        controller.setEnabled(true);
-    }
-
-    @Override
-    public void start() {
-        musicSrv.go();
-    }
-
-    @Override
-    public void pause() {
-        playbackPaused=true;
-        musicSrv.pausePlayer();
-    }
-
-    @Override
-    public int getDuration() {
-        if(musicSrv!=null && musicBound && musicSrv.isPng())
-            return musicSrv.getDur();
-        else
-            return 0;
-    }
-
-    @Override
-    public int getCurrentPosition() {
-        if(musicSrv!=null && musicBound && musicSrv.isPng())
-            return musicSrv.getPosn();
-        else
-            return 0;
-    }
-
-    @Override
-    public void seekTo(int pos) {
-        musicSrv.seek(pos);
-    }
-
-    @Override
-    public boolean isPlaying() {
-        if(musicSrv!=null && musicBound)
-            return musicSrv.isPng();
-        return false;
-    }
-
-    @Override
-    public int getBufferPercentage() {
-        return 0;
-    }
-
-    @Override
-    public boolean canPause() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekBackward() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekForward() {
-        return true;
-    }
-
-    @Override
-    public int getAudioSessionId() {
-        return 0;
-    }
-
-    private void playNext(){
-        musicSrv.playNext();
-        if(playbackPaused){
-            setController();
-            playbackPaused=false;
-        }
-        controller.show(0);
-    }
-
-    private void playPrev(){
-        musicSrv.playPrev();
-        if(playbackPaused){
-            setController();
-            playbackPaused=false;
-        }
-        controller.show(0);
-    }
+//    private void setController(){
+//        //set the controller up
+//        if(controller == null)
+//            controller = new MusicController(this);
+//        else
+//            controller.invalidate();
+//        controller.setPrevNextListeners(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                playNext();
+//            }
+//        }, new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                playPrev();
+//            }
+//        });
+//        controller.setMediaPlayer(this);
+//        controller.setAnchorView(findViewById(R.id.container));
+//        controller.setEnabled(true);
+//    }
+//
+//    @Override
+//    public void start() {
+//        musicSrv.go();
+//    }
+//
+//    @Override
+//    public void pause() {
+//        playbackPaused=true;
+//        musicSrv.pausePlayer();
+//    }
+//
+//    @Override
+//    public int getDuration() {
+//        if(musicSrv!=null && musicBound && musicSrv.isPng())
+//            return musicSrv.getDur();
+//        else
+//            return 0;
+//    }
+//
+//    @Override
+//    public int getCurrentPosition() {
+//        if(musicSrv!=null && musicBound && musicSrv.isPng())
+//            return musicSrv.getPosn();
+//        else
+//            return 0;
+//    }
+//
+//    @Override
+//    public void seekTo(int pos) {
+//        musicSrv.seek(pos);
+//    }
+//
+//    @Override
+//    public boolean isPlaying() {
+//        if(musicSrv!=null && musicBound)
+//            return musicSrv.isPng();
+//        return false;
+//    }
+//
+//    @Override
+//    public int getBufferPercentage() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public boolean canPause() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean canSeekBackward() {
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean canSeekForward() {
+//        return true;
+//    }
+//
+//    @Override
+//    public int getAudioSessionId() {
+//        return 0;
+//    }
+//
+//    private void playNext(){
+//        musicSrv.playNext();
+//        if(playbackPaused){
+//            setController();
+//            playbackPaused=false;
+//        }
+//        controller.show(0);
+//    }
+//
+//    private void playPrev(){
+//        musicSrv.playPrev();
+//        if(playbackPaused){
+//            setController();
+//            playbackPaused=false;
+//        }
+//        controller.show(0);
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////ACTION BAR AND TABS//////////////////////////////////////
