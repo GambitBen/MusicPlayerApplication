@@ -132,23 +132,23 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor!=null "+(musicCursor!=null));
         if(musicCursor!=null && musicCursor.moveToFirst()){
             //get columns
-            int titleColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media.TITLE);
-            int idColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media._ID);
-            int artistColumn = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media.ARTIST);
+//            int titleColumn = musicCursor.getColumnIndex
+//                    (MediaStore.Audio.Media.TITLE);
+//            int idColumn = musicCursor.getColumnIndex
+//                    (MediaStore.Audio.Media._ID);
+//            int artistColumn = musicCursor.getColumnIndex
+//                    (MediaStore.Audio.Media.ARTIST);
             int location = musicCursor.getColumnIndex
                     (MediaStore.Audio.Media.DATA);
             //add songs to list
             do {
                 String thisPath = musicCursor.getString(location);
                 //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thiId="+thisPath);
-                long thisId = musicCursor.getLong(idColumn);
-                String thisTitle = musicCursor.getString(titleColumn);
-                String thisArtist = musicCursor.getString(artistColumn);
+//                long thisId = musicCursor.getLong(idColumn);
+//                String thisTitle = musicCursor.getString(titleColumn);
+//                String thisArtist = musicCursor.getString(artistColumn);
                 if (!thisPath.equals("/storage/sdcard/Notifications/Calendar Notification.ogg"))
-                    songDatabase.add(new Song(thisPath, thisId, thisTitle, thisArtist));
+                    songDatabase.add(new Song(thisPath));//, thisId, thisTitle, thisArtist));
             }
             while (musicCursor.moveToNext());
         }

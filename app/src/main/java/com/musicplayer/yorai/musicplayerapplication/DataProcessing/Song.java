@@ -19,18 +19,16 @@ public class Song {
     ID3v2 id3v2Tag;
 
     private String path;
-    private long id;
-    private String title;
-    private String artist;
+//    private long id;
+//    private String title;
+//    private String artist;
 
-    public Song(String songPath, long songID, String songTitle, String songArtist) {
+    public Song(String songPath){//, long songID, String songTitle, String songArtist) {
         path = songPath;
-        id = songID;
-        title = songTitle;
-        artist = songArtist;
+//        id = songID;
+//        title = songTitle;
+//        artist = songArtist;
         mp3file = null;
-        //File mp3f = new File(path);
-        //Path mp3f2 = Paths.get(path);
         try {
             mp3file = new Mp3File(path);
         } catch (IOException e) {
@@ -65,7 +63,7 @@ public class Song {
     }
 
     public String getPath(){return path;}
-    public long getID(){return id;}
+//    public long getID(){return id;}
     public String getTrack(){return id3v2Tag.getTrack();}
     public String getArtist(){return id3v2Tag.getArtist();}
     public String getTitle(){return id3v2Tag.getTitle();}

@@ -89,9 +89,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         //get song title
         songTitle = playSong.getTitle();
         //get id
-        long currSong = playSong.getID();
+//        long currSong = playSong.getID();
         //set uri
-        Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
+//        Uri trackUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, currSong);
         try{
             //player.setDataSource(getApplicationContext(), trackUri);
             player.setDataSource(songPath);
