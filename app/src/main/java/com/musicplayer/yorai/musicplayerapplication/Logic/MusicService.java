@@ -149,7 +149,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void setList(ArrayList<Song> theSongs){
-        currentPlaylist =theSongs;
+        currentPlaylist = theSongs;
     }
 
     public class MusicBinder extends Binder {

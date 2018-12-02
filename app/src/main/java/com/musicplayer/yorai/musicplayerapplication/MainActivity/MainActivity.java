@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.musicplayer.yorai.musicplayerapplication.Adapters.SongItem;
 import com.musicplayer.yorai.musicplayerapplication.DataProcessing.Song;
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicController;
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService.MusicBinder;
@@ -165,13 +166,18 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 
     public void songPicked(View view){
         //pause();
-        musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
-        musicSrv.playSong();
-        if(playbackPaused){
-            //setController();
-            playbackPaused=false;
+        if (view.getTag() instanceof SongItem){
+            SongItem item = (SongItem) view.getTag();
+            musicSrv.setSong(item.getSongPosition());
+            musicSrv.playSong();
+            if(playbackPaused){
+                //setController();
+                playbackPaused=false;
+            }
+            //controller.show(0);
         }
-        //controller.show(0);
+        else
+            return;
     }
 
     public void artistPicked(View view){

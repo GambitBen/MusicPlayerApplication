@@ -60,7 +60,7 @@ public class AllSongsFragmentTab extends Fragment {
             }
         });
 
-        SongListAdapter songAdt = new SongListAdapter(getActivity(), songList);
+        SongListAdapter songAdt = new SongListAdapter(getActivity(), R.layout.item_song, songList);
         songView.setAdapter(songAdt);
 
         return rootView;
