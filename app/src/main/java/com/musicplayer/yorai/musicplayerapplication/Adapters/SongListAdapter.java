@@ -98,9 +98,14 @@ public class SongListAdapter extends BaseAdapter {
         viewHolder.setSongPosition(position);
         viewHolder.setSong(currSong);
 
-//        byte[] albumImage = currSong.getAlbumImage();
-//        Bitmap bitmap = BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);
-//        viewHolder.albumImageView.setImageBitmap(bitmap);
+        byte[] albumImage = currSong.getAlbumImage();
+        if (albumImage != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);
+            viewHolder.getAlbumImageView().setImageBitmap(bitmap);
+        }
+        else{
+            viewHolder.getAlbumImageView().setImageResource(R.drawable.song_cover_null);
+        }
 
         return convertView;
     }
