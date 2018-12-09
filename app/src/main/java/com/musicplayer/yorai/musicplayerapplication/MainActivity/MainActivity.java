@@ -28,10 +28,8 @@ import android.view.ViewGroup;
 
 import com.musicplayer.yorai.musicplayerapplication.Adapters.SongItem;
 import com.musicplayer.yorai.musicplayerapplication.DataProcessing.Song;
-import com.musicplayer.yorai.musicplayerapplication.Logic.MusicController;
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService.MusicBinder;
 
-import android.widget.MediaController.MediaPlayerControl;
 import android.widget.TextView;
 
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService;
@@ -112,10 +110,10 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager);
 
         currentPlaylist = new ArrayList<Song>();

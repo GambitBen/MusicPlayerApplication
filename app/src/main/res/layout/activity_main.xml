@@ -12,7 +12,6 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -25,7 +24,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
+            android:id="@+id/tab_layout"
             app:tabMode="scrollable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,23 +38,21 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/container"
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="?attr/actionBarSize"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/media_player_controls"
+    <android.support.v7.widget.CardView
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
+        android:id="@+id/player_control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end|right"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        tools:layout_editor_absoluteX="-1dp">
+        android:layout_gravity="bottom">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,7 +68,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="10dp"
-                android:src="@drawable/song_cover_null" />
+                android:src="@drawable/song_cover_null"/>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -97,32 +94,37 @@
 
             </LinearLayout>
 
-            <!--<View-->
-                <!--android:layout_width="15dp"-->
-                <!--android:layout_height="0dp" />-->
-
-            <!--<View-->
-                <!--android:layout_width="15dp"-->
-                <!--android:layout_height="0dp" />-->
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <ToggleButton
-                android:id="@+id/playPauseButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_play_pause"
-                android:textOn=" android:textOff=" >
-            </ToggleButton>
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <ImageView
+                android:id="@+id/bt_back"
+                android:clickable="true"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/ic_back"
+                android:tint="@color/colorAccent" />
+            <ImageView
+                android:id="@+id/bt_play_pause"
+                android:clickable="true"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/ic_play"
+                android:tint="@color/colorAccent" />
+            <ImageView
+                android:id="@+id/bt_next"
+                android:clickable="true"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/ic_next"
+                android:tint="@color/colorAccent" />
 
         </LinearLayout>
 
-    </android.support.v7.widget.Toolbar>
+
+    </android.support.v7.widget.CardView>
 
 </android.support.design.widget.CoordinatorLayout>
