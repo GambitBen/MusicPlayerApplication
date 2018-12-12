@@ -3,15 +3,11 @@ package com.musicplayer.yorai.musicplayerapplication.Adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.musicplayer.yorai.musicplayerapplication.DataProcessing.Song;
@@ -19,95 +15,83 @@ import com.musicplayer.yorai.musicplayerapplication.R;
 
 import java.util.ArrayList;
 
-public class SongListAdapter extends BaseAdapter {
+public class SongListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<Song> songs;
-    private int layout;
-    private Context context;
+    private Context mContext;
+    private ArrayList<Song> mSongs;
+    private OnItemClickListener mOnItemClickListener;
 
+    public SongListAdapter(Context mContext, ArrayList<Song> mSongs) {
+        this.mContext = mContext;
+        this.mSongs = mSongs;
+    }
 
-    public SongListAdapter(Context context, int layout, ArrayList<Song> songs){
-        this.context = context;
-        this.layout = layout;
-        this.songs = songs;
+    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mOnItemClickListener = mItemClickListener;
     }
 
     @Override
-    public int getCount() {
-        return songs.size();
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_song, parent, false);
+        RecyclerView.ViewHolder viewHolder = new SongItem(view);
+        return viewHolder;
     }
 
     @Override
-    public Object getItem(int i) {
-        return null;
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        if (holder instanceof SongItem) {
+            SongItem viewHolder = (SongItem) holder;
+
+            final Song currSong = mSongs.get(position);
+            viewHolder.songView.setText(currSong.getTitle());
+            viewHolder.artistView.setText(currSong.getArtist());
+
+            byte[] albumImage = currSong.getAlbumImage();
+            if (albumImage != null) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);
+                viewHolder.albumImageView.setImageBitmap(bitmap);
+            }
+            else{
+                viewHolder.albumImageView.setImageResource(R.drawable.song_cover_null);
+            }
+
+            viewHolder.layoutParent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemClick(view, mSongs.get(position), position);
+                    }
+                }
+            });
+        }
     }
 
     @Override
-    public long getItemId(int i) {
-        return 0;
+    public int getItemCount() {
+        return mSongs.size();
     }
 
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        //map to song layout
-//        LinearLayout songLay = (LinearLayout)LayoutInflater.from(context).inflate(R.layout.item_song, parent, false);
-//        //get album image views
-//        ImageView albumImageView = (ImageView)songLay.findViewById(R.id.image);
-//        //get title and artist views
-//        TextView songView = (TextView)songLay.findViewById(R.id.title);
-//        TextView artistView = (TextView)songLay.findViewById(R.id.artist);
-//        //get song using position
-//        Song currSong = songs.get(position);
-//        //get title and artist strings
-////        albumImageView.setImageBitmap(currSong.getAlbumImage());
-//        //get song's album image
-//        songView.setText(currSong.getTitle());
-//        artistView.setText(currSong.getArtist());
-//        //set position as tag
-//        songLay.setTag(position);
-//        return songLay;
-//    }
-
-    private class ViewHolder {
-        TextView songView, artistView;
-        ImageView albumImageView;
-        int songPosition;
-        Song song;
+    public Song getItem(int position) {
+        return mSongs.get(position);
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final SongItem viewHolder;
-        if(convertView == null){
-            viewHolder = new SongItem();
-            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public class SongItem extends RecyclerView.ViewHolder{
+        protected View layoutParent;
+        protected TextView songView;
+        protected TextView artistView;
+        protected ImageView albumImageView;
 
-            convertView = layoutInflater.inflate(layout, null);
-            viewHolder.setSongView((TextView) convertView.findViewById(R.id.title));
-            viewHolder.setArtistView((TextView) convertView.findViewById(R.id.artist));
-            viewHolder.setAlbumImageView((ImageView) convertView.findViewById(R.id.image));
-
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (SongItem) convertView.getTag();
+        protected SongItem(View itemView) {
+            super(itemView);
+            layoutParent = (View) itemView.findViewById(R.id.layout_parent);
+            songView = (TextView) itemView.findViewById(R.id.title);
+            artistView = (TextView) itemView.findViewById(R.id.artist);
+            albumImageView = (ImageView) itemView.findViewById(R.id.image);
         }
+    }
 
-        final Song currSong = songs.get(position);
-
-        viewHolder.getSongView().setText(currSong.getTitle());
-        viewHolder.getArtistView().setText(currSong.getArtist());
-        viewHolder.setSongPosition(position);
-        viewHolder.setSong(currSong);
-
-        byte[] albumImage = currSong.getAlbumImage();
-        if (albumImage != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);
-            viewHolder.getAlbumImageView().setImageBitmap(bitmap);
-        }
-        else{
-            viewHolder.getAlbumImageView().setImageResource(R.drawable.song_cover_null);
-        }
-
-        return convertView;
+    public interface OnItemClickListener {
+        void onItemClick(View view, Song obj, int pos);
     }
 
 }

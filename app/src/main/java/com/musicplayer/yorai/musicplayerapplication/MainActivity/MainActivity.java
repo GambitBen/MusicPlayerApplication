@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
@@ -21,17 +20,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.musicplayer.yorai.musicplayerapplication.Adapters.SongItem;
 import com.musicplayer.yorai.musicplayerapplication.DataProcessing.Song;
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService.MusicBinder;
 
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService;
 import com.musicplayer.yorai.musicplayerapplication.R;
@@ -57,17 +52,23 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     private ViewPager mViewPager;
     private TabLayout tabLayout;
 
+    private ImageView song_album_cover;
+    private ImageView bt_back;
+    private ImageView bt_play_pause;
+    private ImageView bt_next;
+
+
     public static ArrayList<Song> currentPlaylist;
     public static ArrayList<Song> songDatabase;
 
-    private MusicService musicSrv;
+    private static MusicService musicSrv;
     private Intent playIntent;
     private boolean musicBound=false;
 
     //public static MusicController controller;
 
-    private boolean mediaPlayerPaused = false;
-    private boolean playbackPaused = false;
+    private static boolean mediaPlayerPaused = false;
+    private static boolean playbackPaused = false;
 
     //connect to the service
     private ServiceConnection musicConnection = new ServiceConnection(){
@@ -116,6 +117,10 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 //        setSupportActionBar(toolbar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        song_album_cover = (ImageView) findViewById(R.id.song_album_cover);
+        bt_back = (ImageView) findViewById(R.id.bt_back);
+        bt_play_pause = (ImageView) findViewById(R.id.bt_play_pause);
+        bt_next = (ImageView) findViewById(R.id.bt_next);
 
         setupViewPager(mViewPager);
         tabLayout.setupWithViewPager(mViewPager);
@@ -143,6 +148,26 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
             }
         });
 
+//        // setup music component
+//        bt_play_pause.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View arg0) {
+//                // check for already playing
+//                if (global.isPlaying()) {
+//                    global.setPlayerState(PlayerState.PAUSE);
+//                } else {
+//                    global.setPlayerState(PlayerState.START);
+//                }
+//            }
+//        });
+//
+//        song_album_cover.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent i = new Intent(getApplicationContext(), ActivityPlayerDetail.class);
+//                startActivity(i);
+//            }
+//        });
     }
 
     public void getSongList() {
@@ -176,6 +201,20 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         }
     }
 
+//    public static void selectPlaylist(Playlist playlist){
+//    }
+
+    public static void selectSong(int position){
+            musicSrv.setSong(position);
+            musicSrv.playSong();
+            if(playbackPaused)
+                playbackPaused=false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////ACTIVITY STATES//////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -184,33 +223,6 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
             bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
             startService(playIntent);
         }
-    }
-
-    public void songPicked(View view){
-        //pause();
-        if (view.getTag() instanceof SongItem){
-            SongItem item = (SongItem) view.getTag();
-            musicSrv.setSong(item.getSongPosition());
-            musicSrv.playSong();
-            if(playbackPaused){
-                //setController();
-                playbackPaused=false;
-            }
-            //controller.show(0);
-        }
-        else
-            return;
-    }
-
-    public void artistPicked(View view){
-        /*musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
-        musicSrv.playSong();
-        if(playbackPaused){
-            setController();
-            playbackPaused=false;
-        }
-        controller.show(0);*/
-
     }
 
     @Override
@@ -362,9 +374,9 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 
     private void setupViewPager(ViewPager viewPager) {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mSectionsPagerAdapter.addFragment(AllSongsFragmentTab.newInstance(1), "Songs");
-        mSectionsPagerAdapter.addFragment(AllSongsFragmentTab.newInstance(2), "Albums");
-        mSectionsPagerAdapter.addFragment(AllSongsFragmentTab.newInstance(3), "Artists");
+        mSectionsPagerAdapter.addFragment(songsTabFragment.newInstance(), "Songs");
+        mSectionsPagerAdapter.addFragment(songsTabFragment.newInstance(), "Albums");
+        mSectionsPagerAdapter.addFragment(songsTabFragment.newInstance(), "Artists");
         viewPager.setAdapter(mSectionsPagerAdapter);
     }
 

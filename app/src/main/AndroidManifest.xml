@@ -7,7 +7,7 @@
     <!-- We will use this permission to let music playback continue when the user's device becomes idle -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <!-- We will use this permission to access and change the device's storage (to edit and/or remove songs) -->
+    <!-- We will use this permission to access and change the device's storage (to edit and/or remmSongsongs) -->
 
 
     <application
