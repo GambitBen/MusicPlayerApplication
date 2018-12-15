@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.KeyEvent;
 import android.widget.MediaController;
 
-import com.musicplayer.yorai.musicplayerapplication.MainActivity.MainActivity;
+import com.musicplayer.yorai.musicplayerapplication.MainActivity;
 
 // DELETE THIS CLASS
 public class MusicController extends MediaController {

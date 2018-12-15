@@ -1,22 +1,18 @@
 package com.musicplayer.yorai.musicplayerapplication.Logic;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.musicplayer.yorai.musicplayerapplication.DataProcessing.Song;
-import com.musicplayer.yorai.musicplayerapplication.MainActivity.MainActivity;
-import com.musicplayer.yorai.musicplayerapplication.R;
+import com.musicplayer.yorai.musicplayerapplication.Model.Song;
+import com.musicplayer.yorai.musicplayerapplication.MainActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -182,7 +178,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         player.seekTo(posn);
     }
 
-    public void go(){
+    public void startPlayer(){
         player.start();
     }
 

@@ -1,4 +1,4 @@
-package com.musicplayer.yorai.musicplayerapplication.MainActivity;
+package com.musicplayer.yorai.musicplayerapplication.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,8 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.musicplayer.yorai.musicplayerapplication.DataProcessing.Song;
+import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 import com.musicplayer.yorai.musicplayerapplication.Adapters.SongListAdapter;
+import com.musicplayer.yorai.musicplayerapplication.MainActivity;
 import com.musicplayer.yorai.musicplayerapplication.R;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class songsTabFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
 
         //songList = MainActivity.currentPlaylist;
-        this.songList=MainActivity.songDatabase;
+        this.songList= MainActivity.songDatabase;
         MainActivity.currentPlaylist=this.songList;
 
         Collections.sort(songList, new Comparator<Song>(){

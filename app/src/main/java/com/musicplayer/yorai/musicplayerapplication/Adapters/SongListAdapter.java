@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.musicplayer.yorai.musicplayerapplication.DataProcessing.Song;
+import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 import com.musicplayer.yorai.musicplayerapplication.R;
 
 import java.util.ArrayList;

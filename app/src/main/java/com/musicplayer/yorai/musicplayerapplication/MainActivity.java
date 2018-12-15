@@ -1,4 +1,4 @@
-package com.musicplayer.yorai.musicplayerapplication.MainActivity;
+package com.musicplayer.yorai.musicplayerapplication;
 
 import android.Manifest;
 import android.content.ComponentName;
@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
@@ -23,13 +25,16 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.musicplayer.yorai.musicplayerapplication.DataProcessing.Song;
+import com.musicplayer.yorai.musicplayerapplication.Fragments.*;
+
+import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService.MusicBinder;
 
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService;
-import com.musicplayer.yorai.musicplayerapplication.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +57,12 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     private ViewPager mViewPager;
     private TabLayout tabLayout;
 
-    private ImageView song_album_cover;
-    private ImageView bt_back;
-    private ImageView bt_play_pause;
-    private ImageView bt_next;
+    private static ImageView song_album_cover;
+    private static ImageView bt_back;
+    private static ImageView bt_play_pause;
+    private static ImageView bt_next;
+    private static TextView song_title;
+    private static TextView song_artist;
 
 
     public static ArrayList<Song> currentPlaylist;
@@ -121,6 +128,8 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         bt_back = (ImageView) findViewById(R.id.bt_back);
         bt_play_pause = (ImageView) findViewById(R.id.bt_play_pause);
         bt_next = (ImageView) findViewById(R.id.bt_next);
+        song_title = (TextView) findViewById(R.id.song_title);
+        song_artist = (TextView) findViewById(R.id.song_artist);
 
         setupViewPager(mViewPager);
         tabLayout.setupWithViewPager(mViewPager);
@@ -148,26 +157,30 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
             }
         });
 
-//        // setup music component
-//        bt_play_pause.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View arg0) {
-//                // check for already playing
-//                if (global.isPlaying()) {
-//                    global.setPlayerState(PlayerState.PAUSE);
-//                } else {
-//                    global.setPlayerState(PlayerState.START);
-//                }
-//            }
-//        });
-//
-//        song_album_cover.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent i = new Intent(getApplicationContext(), ActivityPlayerDetail.class);
-//                startActivity(i);
-//            }
-//        });
+        // setup music component
+        bt_play_pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // check for already playing
+                if (!mediaPlayerPaused) {
+                    mediaPlayerPaused = true;
+                    musicSrv.pausePlayer();
+                    bt_play_pause.setImageResource(R.drawable.ic_pause);
+                } else {
+                    mediaPlayerPaused = false;
+                    musicSrv.startPlayer();
+                    bt_play_pause.setImageResource(R.drawable.ic_play);
+                }
+            }
+        });
+
+        song_album_cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     public void getSongList() {
@@ -207,8 +220,21 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     public static void selectSong(int position){
             musicSrv.setSong(position);
             musicSrv.playSong();
-            if(playbackPaused)
-                playbackPaused=false;
+            if(playbackPaused) {
+                playbackPaused = false;
+                bt_play_pause.setImageResource(R.drawable.ic_pause);
+            }
+        Song song = currentPlaylist.get(position);
+        song_title.setText(song.getTitle());
+        song_artist.setText(song.getArtist());
+        byte[] albumImage = song.getAlbumImage();
+        if (albumImage != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);
+            song_album_cover.setImageBitmap(bitmap);
+        }
+        else{
+            song_album_cover.setImageResource(R.drawable.song_cover_null);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
