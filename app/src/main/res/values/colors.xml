@@ -8,4 +8,6 @@
     <color name="background">#555555</color>
 
     <color name="grey_bg">#F7F7F7</color>
+    <color name="grey_medium">#BDBFC1</color>
+
 </resources>
