@@ -1,12 +1,18 @@
 package com.musicplayer.yorai.musicplayerapplication.Model;
 
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import com.mpatric.mp3agic.ID3v1;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.ID3v24Tag;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import com.musicplayer.yorai.musicplayerapplication.MainActivity;
+import com.musicplayer.yorai.musicplayerapplication.R;
 
 import java.io.IOException;
 
@@ -78,5 +84,16 @@ public class Song {
     public String getUrl(){return id3v2Tag.getUrl();}
     public String getEncoder(){return id3v2Tag.getEncoder();}
     public byte[] getAlbumImage(){return id3v2Tag.getAlbumImage();}
+    public Bitmap getAlbumImage(Context context){
+        byte[] albumImage = getAlbumImage();
+        Bitmap bitmap;
+        if (albumImage != null) {
+            bitmap = BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);
+        }
+        else{
+            bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.song_cover_null);
+        }
+        return bitmap;
+    }
 
 }

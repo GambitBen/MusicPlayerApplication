@@ -68,14 +68,14 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     public static ArrayList<Song> currentPlaylist;
     public static ArrayList<Song> songDatabase;
 
-    private static MusicService musicSrv;
+    public static MusicService musicSrv;
     private Intent playIntent;
     private boolean musicBound=false;
 
     //public static MusicController controller;
 
     private static boolean mediaPlayerPaused = false;
-    private static boolean playbackPaused = false;
+    //private static boolean playbackPaused = false;
 
     //connect to the service
     private ServiceConnection musicConnection = new ServiceConnection(){
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         });
     }
 
-    public void getSongList() {
+    private void getSongList() {
         //retrieve song info
         ContentResolver contentResolver = getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -214,19 +214,29 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         }
     }
 
-//    public static void selectPlaylist(Playlist playlist){
+    public static boolean isMediaPlayerPaused() {
+        return mediaPlayerPaused;
+        //musicSrv.isPlaying();
+    }
+
+    public static void setMediaPlayerPaused(boolean mediaPlayerPaused) {
+        MainActivity.mediaPlayerPaused = mediaPlayerPaused;
+    }
+
+    //    public static void selectPlaylist(Playlist playlist){
 //    }
 
     public static void selectSong(int position){
             musicSrv.setSong(position);
             musicSrv.playSong();
-            if(playbackPaused) {
-                playbackPaused = false;
+            if(mediaPlayerPaused) {
+                mediaPlayerPaused = false;
                 bt_play_pause.setImageResource(R.drawable.ic_pause);
             }
         Song song = currentPlaylist.get(position);
         song_title.setText(song.getTitle());
         song_artist.setText(song.getArtist());
+//        song_album_cover.setImageBitmap(song.getAlbumImage(this));
         byte[] albumImage = song.getAlbumImage();
         if (albumImage != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);

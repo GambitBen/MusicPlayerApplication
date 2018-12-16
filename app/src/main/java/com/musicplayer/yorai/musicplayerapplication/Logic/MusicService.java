@@ -144,6 +144,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         songPosn=songIndex;
     }
 
+    public Song getSong(){
+        return currentPlaylist.get(songPosn);
+    }
+
     public void setList(ArrayList<Song> theSongs){
         currentPlaylist = theSongs;
     }
@@ -158,15 +162,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     ///////////////////////////////////////MEDIA PLAYER CONTROL/////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public int getPosn(){
+    public int getCurrentPosition(){
         return player.getCurrentPosition();
     }
 
-    public int getDur(){
+    public int getDuration(){
         return player.getDuration();
     }
 
-    public boolean isPng(){
+    public boolean isPlaying(){
         return player.isPlaying();
     }
 
@@ -174,7 +178,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         player.pause();
     }
 
-    public void seek(int posn){
+    public void seekTo(int posn){
         player.seekTo(posn);
     }
 

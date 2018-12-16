@@ -45,15 +45,15 @@ public class SongListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final Song currSong = mSongs.get(position);
             viewHolder.songView.setText(currSong.getTitle());
             viewHolder.artistView.setText(currSong.getArtist());
-
-            byte[] albumImage = currSong.getAlbumImage();
-            if (albumImage != null) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);
-                viewHolder.albumImageView.setImageBitmap(bitmap);
-            }
-            else{
-                viewHolder.albumImageView.setImageResource(R.drawable.song_cover_null);
-            }
+            viewHolder.albumImageView.setImageBitmap(currSong.getAlbumImage(mContext));
+//            byte[] albumImage = currSong.getAlbumImage();
+//            if (albumImage != null) {
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);
+//                viewHolder.albumImageView.setImageBitmap(bitmap);
+//            }
+//            else{
+//                viewHolder.albumImageView.setImageResource(R.drawable.song_cover_null);
+//            }
 
             viewHolder.layoutParent.setOnClickListener(new View.OnClickListener() {
                 @Override

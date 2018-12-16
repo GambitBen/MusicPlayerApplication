@@ -9,5 +9,6 @@
 
     <color name="grey_bg">#F7F7F7</color>
     <color name="grey_medium">#BDBFC1</color>
+    <color name="grey_hard">#96989A</color>
 
 </resources>
