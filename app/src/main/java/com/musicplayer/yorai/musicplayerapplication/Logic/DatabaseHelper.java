@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "title.db";
@@ -22,7 +23,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_NAME + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,TITLE TEXT,ARTIST TEXT,ALBUM TEXT)");
+        db.execSQL("create table " + TABLE_NAME + " (_id integer primary key autoincrement, title text, artist text, album text)");
+        Log.d("!!!!!!!!!!DatabaseHelper extends SQLiteOpenHelper!!!!!!!!!!", "DatabaseHelper onCreate: db="+db.getPath());
     }
 
     @Override
@@ -54,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
         }
         ContentValues row = new ContentValues();
-        Cursor cur = db.rawQuery("select title, priority from " + TABLE_NAME + " where _id = ?", new String[] { String.valueOf(id) });
+        Cursor cur = db.rawQuery("select title, artist, album from " + TABLE_NAME + " where _id = ?", new String[] { String.valueOf(id) });
         if (cur.moveToNext()) {
             row.put("title", cur.getString(0));
             row.put("artist", cur.getString(1));

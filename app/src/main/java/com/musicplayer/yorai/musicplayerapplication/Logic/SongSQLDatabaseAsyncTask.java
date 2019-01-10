@@ -11,12 +11,16 @@ import android.util.Log;
 import com.musicplayer.yorai.musicplayerapplication.MainActivity;
 import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 
+import java.util.ArrayList;
+
 public class SongSQLDatabaseAsyncTask extends AsyncTask<Context, Void, Void> {
     DatabaseHelper myDB;
     Context context;
+    ArrayList<Song> songDatabase;
 
     public SongSQLDatabaseAsyncTask(Context context) {
         this.context = context;
+        this.songDatabase = new ArrayList<Song>();
     }
 
     @Override
@@ -47,15 +51,21 @@ public class SongSQLDatabaseAsyncTask extends AsyncTask<Context, Void, Void> {
 //                String thisArtist = musicCursor.getString(artistColumn);
                 if (!thisPath.equals("/storage/sdcard/Notifications/Calendar Notification.ogg")) {
                     Song song = new Song(thisPath);
-                    MainActivity.songDatabase.add(song);//, thisId, thisTitle, thisArtist));
+                    songDatabase.add(song);//, thisId, thisTitle, thisArtist));
                     myDB.add(song.getTitle(), song.getArtist(), song.getAlbum());
                     Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thisPath="+thisPath);
-                    Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: songDatabase.indexOf="+MainActivity.songDatabase.indexOf(song));
-                    Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: songDatabase.indexOf="+myDB.get(MainActivity.songDatabase.indexOf(song)).toString());
+                    Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: songDatabase.indexOf="+songDatabase.indexOf(song));
+                    Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: songDatabase.indexOf="+myDB.get(songDatabase.indexOf(song)).toString());
                 }
             }
             while (musicCursor.moveToNext());
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void result) {
+        super.onPostExecute(result);
+        MainActivity.songDatabase = (ArrayList<Song>) this.songDatabase.clone();
     }
 }

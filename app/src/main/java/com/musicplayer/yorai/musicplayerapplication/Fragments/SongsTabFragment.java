@@ -41,8 +41,9 @@ public class SongsTabFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
+        while (MainActivity.songDatabase == null);
         //songList = MainActivity.currentPlaylist;
-        this.songList= MainActivity.songDatabase;
+        this.songList= (ArrayList<Song>) MainActivity.songDatabase.clone();
         //TODO: clone instead
         MainActivity.currentPlaylist=this.songList;
 
