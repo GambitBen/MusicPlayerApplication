@@ -19,17 +19,17 @@ import java.util.Collections;
 import java.util.Comparator;
 
 
-public class songsTabFragment extends Fragment {
+public class SongsTabFragment extends Fragment {
 
     private View rootView;
     private ArrayList<Song> songList;
     private ListView songView;
 
-    public songsTabFragment() {
+    public SongsTabFragment() {
     }
 
-    public static songsTabFragment newInstance() {
-        songsTabFragment fragment = new songsTabFragment();
+    public static SongsTabFragment newInstance() {
+        SongsTabFragment fragment = new SongsTabFragment();
         return fragment;
     }
 
@@ -43,6 +43,7 @@ public class songsTabFragment extends Fragment {
 
         //songList = MainActivity.currentPlaylist;
         this.songList= MainActivity.songDatabase;
+        //TODO: clone instead
         MainActivity.currentPlaylist=this.songList;
 
         Collections.sort(songList, new Comparator<Song>(){

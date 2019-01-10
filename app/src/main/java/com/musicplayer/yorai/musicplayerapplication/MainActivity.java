@@ -27,6 +27,7 @@ import android.view.MenuItem;
 
 import com.musicplayer.yorai.musicplayerapplication.Fragments.*;
 
+import com.musicplayer.yorai.musicplayerapplication.Logic.SongSQLDatabaseAsyncTask;
 import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService.MusicBinder;
 
@@ -110,13 +111,14 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         }
 
         //SQLlite - use another thread
-        if (songDatabase == null){
-            songDatabase = new ArrayList<Song>();
-            getSongList();
-        }
+//        if (songDatabase == null){
+//            songDatabase = new ArrayList<Song>();
+//            getSongList();
+//        }
+        new SongSQLDatabaseAsyncTask(this).execute();
+
         initComponent();
         actionHandle();
-
     }
 
     private void initComponent() {
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         setupViewPager(mViewPager);
         tabLayout.setupWithViewPager(mViewPager);
 
-        currentPlaylist = new ArrayList<Song>();
+        currentPlaylist = new ArrayList<Song>(); //maybe i should comment this out
 
         tabLayout.getTabAt(0).setText("Songs");
         tabLayout.getTabAt(1).setText("Artists");
@@ -410,9 +412,9 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 
     private void setupViewPager(ViewPager viewPager) {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mSectionsPagerAdapter.addFragment(songsTabFragment.newInstance(), "Songs");
-        mSectionsPagerAdapter.addFragment(songsTabFragment.newInstance(), "Albums");
-        mSectionsPagerAdapter.addFragment(songsTabFragment.newInstance(), "Artists");
+        mSectionsPagerAdapter.addFragment(SongsTabFragment.newInstance(), "Songs");
+        mSectionsPagerAdapter.addFragment(SongsTabFragment.newInstance(), "Albums");
+        mSectionsPagerAdapter.addFragment(SongsTabFragment.newInstance(), "Artists");
         viewPager.setAdapter(mSectionsPagerAdapter);
     }
 
