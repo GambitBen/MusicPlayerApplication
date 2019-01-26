@@ -13,7 +13,7 @@ import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 
 import java.util.ArrayList;
 
-public class SongSQLDatabaseAsyncTask extends AsyncTask<Context, Void, Void> {
+public class SongSQLDatabaseAsyncTask extends AsyncTask<Context, Void, ArrayList<Song>> {
     DatabaseHelper myDB;
     Context context;
     ArrayList<Song> songDatabase;
@@ -24,7 +24,7 @@ public class SongSQLDatabaseAsyncTask extends AsyncTask<Context, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Context... contexts) {
+    protected ArrayList<Song> doInBackground(Context... contexts) {
         myDB = new DatabaseHelper(context);
         //retrieve song info
         ContentResolver contentResolver = context.getContentResolver();
@@ -55,17 +55,17 @@ public class SongSQLDatabaseAsyncTask extends AsyncTask<Context, Void, Void> {
                     myDB.add(song.getTitle(), song.getArtist(), song.getAlbum());
                     Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thisPath="+thisPath);
                     Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: songDatabase.indexOf="+songDatabase.indexOf(song));
-                    Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: songDatabase.indexOf="+myDB.get(songDatabase.indexOf(song)).toString());
+                    Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: songDatabase.indexOf+1="+myDB.get(songDatabase.indexOf(song)+1).toString());
                 }
             }
             while (musicCursor.moveToNext());
         }
-        return null;
+        return (ArrayList<Song>) this.songDatabase.clone(); //should i clone or send the original?
     }
 
     @Override
-    protected void onPostExecute(Void result) {
+    protected void onPostExecute(ArrayList<Song> result) {
         super.onPostExecute(result);
-        MainActivity.songDatabase = (ArrayList<Song>) this.songDatabase.clone();
+        //MainActivity.songDatabase = (ArrayList<Song>) this.songDatabase.clone();
     }
 }

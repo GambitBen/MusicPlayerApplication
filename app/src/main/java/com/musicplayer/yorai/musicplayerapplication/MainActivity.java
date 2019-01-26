@@ -1,6 +1,7 @@
 package com.musicplayer.yorai.musicplayerapplication;
 
 import android.Manifest;
+import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -22,7 +23,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.musicplayer.yorai.musicplayerapplication.Fragments.*;
@@ -111,19 +115,19 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         }
 
         //SQLlite - use another thread
-//        if (songDatabase == null){
-//            songDatabase = new ArrayList<Song>();
-//            getSongList();
-//        }
-        new SongSQLDatabaseAsyncTask(this).execute();
+        if (songDatabase == null){
+            songDatabase = new ArrayList<Song>();
+            getSongList();
+        }
+//        new SongSQLDatabaseAsyncTask(this).execute();
 
         initComponent();
         actionHandle();
     }
 
     private void initComponent() {
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         song_album_cover = (ImageView) findViewById(R.id.song_album_cover);
@@ -411,6 +415,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void setupViewPager(ViewPager viewPager) {
+        //while (songDatabase == null);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mSectionsPagerAdapter.addFragment(SongsTabFragment.newInstance(), "Songs");
         mSectionsPagerAdapter.addFragment(SongsTabFragment.newInstance(), "Albums");
@@ -418,12 +423,60 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         viewPager.setAdapter(mSectionsPagerAdapter);
     }
 
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the options menu from XML
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.search, menu);
+//
+//        // Get the SearchView and set the searchable configuration
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+//        // Assumes current activity is the searchable activity
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+//
+//        return true;
+//    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.search, menu);
+
+        MenuItem mSearch = menu.findItem(R.id.action_search);
+
+        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        mSearchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
+                startActivity(i);
+            }
+        });
+
+//        mSearchView.setQueryHint("Search");
+//        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                mAdapter.getFilter().filter(newText);
+//                return true;
+//            }
+//        });
+
+        return super.onCreateOptionsMenu(menu);
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

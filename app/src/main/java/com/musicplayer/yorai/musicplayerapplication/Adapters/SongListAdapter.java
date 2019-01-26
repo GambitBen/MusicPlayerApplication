@@ -94,4 +94,7 @@ public class SongListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onItemClick(View view, Song obj, int pos);
     }
 
+    public void clearResults() {
+        mSongs.clear();
+    }
 }

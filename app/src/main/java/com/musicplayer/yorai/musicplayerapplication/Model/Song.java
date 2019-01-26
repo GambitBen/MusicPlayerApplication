@@ -2,6 +2,7 @@ package com.musicplayer.yorai.musicplayerapplication.Model;
 
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -11,6 +12,7 @@ import com.mpatric.mp3agic.ID3v24Tag;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import com.musicplayer.yorai.musicplayerapplication.Logic.DatabaseHelper;
 import com.musicplayer.yorai.musicplayerapplication.MainActivity;
 import com.musicplayer.yorai.musicplayerapplication.R;
 
@@ -95,5 +97,4 @@ public class Song {
         }
         return bitmap;
     }
-
 }
