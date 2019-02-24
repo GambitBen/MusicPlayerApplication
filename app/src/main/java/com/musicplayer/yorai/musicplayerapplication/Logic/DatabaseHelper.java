@@ -9,12 +9,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "title.db";
-    public static final String TABLE_NAME = "song_database";
+    public static final String DATABASE_NAME = "songPlaylist.db";
+    public static final String TABLE_NAME = "songs";
     public static final String COL_1 = "ID";
     public static final String COL_2 = "TITLE";
     public static final String COL_3 = "ARTIST";
     public static final String COL_4 = "ALBUM";
+    public static final String COL_5 = "PATH";
 
 
     public DatabaseHelper(Context context) {
@@ -23,14 +24,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_NAME + " (_id integer primary key autoincrement, title text, artist text, album text)");
+        db.execSQL("create table " + TABLE_NAME + " (_id integer primary key autoincrement, title text, artist text, album text, path text)");
         Log.d("!!!!!!!!!!DatabaseHelper extends SQLiteOpenHelper!!!!!!!!!!", "DatabaseHelper onCreate: db="+db.getPath());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-//        onCreate(db);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
     }
 
     /**
@@ -42,7 +43,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (db == null) {
             return null;
         }
-        return db.rawQuery("select * from " + TABLE_NAME + " order by title, artist", null);
+        return db.rawQuery("select " + COL_5 + " from " + TABLE_NAME + " order by title, artist", null);
+    }
+
+    /**
+     * Return values for a single row with the specified id
+     * @param path The unique path of a song
+     * @return Whether or no the path exists in the table
+     */
+    public boolean exists(String path) {
+        SQLiteDatabase db = getReadableDatabase();
+        if (db == null) {
+            return false;
+        }
+        boolean flag = false;
+        ContentValues row = new ContentValues();
+        Cursor cur = db.rawQuery("select title, artist, album from " + TABLE_NAME + " where path = ?", new String[] {path});
+        if(cur.getCount() > 0)
+            flag = true;
+        cur.close();
+        db.close();
+        return flag;
     }
 
     /**
@@ -72,9 +93,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param title The title value for the new row
      * @param artist The artist value for the new row
      * @param album The album value for the new row
+     * @param path The path value for the new row
      * @return The unique id of the newly added row
      */
-    public long add(String title, String artist, String album) {
+    public long add(String title, String artist, String album, String path) {
         SQLiteDatabase db = getWritableDatabase();
         if (db == null) {
             return 0;
@@ -83,6 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         row.put("title", title);
         row.put("artist", artist);
         row.put("album", album);
+        row.put("path", path);
         long id = db.insert("" + TABLE_NAME + "", null, row);
         db.close();
         return id;
@@ -109,8 +132,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param title The new title value
      * @param artist The new artist value
      * @param album The new album value
+     * @param path The new path value
      */
-    public void update(long id, String title, String artist, String album) {
+    public void update(long id, String title, String artist, String album, String path) {
         SQLiteDatabase db = getWritableDatabase();
         if (db == null) {
             return;
@@ -119,6 +143,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         row.put("title", title);
         row.put("artist", artist);
         row.put("album", album);
+        row.put("path", path);
         db.update("" + TABLE_NAME + "", row, "_id = ?", new String[] { String.valueOf(id) } );
         db.close();
     }

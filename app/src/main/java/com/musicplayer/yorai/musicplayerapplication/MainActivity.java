@@ -1,7 +1,6 @@
 package com.musicplayer.yorai.musicplayerapplication;
 
 import android.Manifest;
-import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -23,15 +22,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.musicplayer.yorai.musicplayerapplication.Fragments.*;
 
-import com.musicplayer.yorai.musicplayerapplication.Logic.SongSQLDatabaseAsyncTask;
 import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService.MusicBinder;
 
@@ -71,7 +67,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 
 
     public static ArrayList<Song> currentPlaylist;
-    public static ArrayList<Song> songDatabase;
+    public static ArrayList<Song> songArrayList;
 
     public static MusicService musicSrv;
     private Intent playIntent;
@@ -115,14 +111,21 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         }
 
         //SQLlite - use another thread
-        if (songDatabase == null){
-            songDatabase = new ArrayList<Song>();
+        if (songArrayList == null){
+            songArrayList = new ArrayList<Song>();
             getSongList();
         }
-//        new SongSQLDatabaseAsyncTask(this).execute();
+//        new RetrievePlaylistSQLDatabaseAsyncTask(this).execute();
+    }
 
+    public void startActivity() {
         initComponent();
         actionHandle();
+    }
+
+    //change songArrayList to songArrayList
+    public void setSongArraylist(ArrayList<Song> songArrayList){
+        this.songArrayList = songArrayList;
     }
 
     private void initComponent() {
@@ -214,7 +217,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 //                String thisTitle = musicCursor.getString(titleColumn);
 //                String thisArtist = musicCursor.getString(artistColumn);
                 if (!thisPath.equals("/storage/sdcard/Notifications/Calendar Notification.ogg"))
-                    songDatabase.add(new Song(thisPath));//, thisId, thisTitle, thisArtist));
+                    songArrayList.add(new Song(thisPath));//, thisId, thisTitle, thisArtist));
             }
             while (musicCursor.moveToNext());
         }
@@ -415,7 +418,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void setupViewPager(ViewPager viewPager) {
-        //while (songDatabase == null);
+        //while (songArrayList == null);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mSectionsPagerAdapter.addFragment(SongsTabFragment.newInstance(), "Songs");
         mSectionsPagerAdapter.addFragment(SongsTabFragment.newInstance(), "Albums");
@@ -442,17 +445,19 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
+        return true;
 
-        MenuItem mSearch = menu.findItem(R.id.action_search);
-
-        SearchView mSearchView = (SearchView) mSearch.getActionView();
-        mSearchView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
-                startActivity(i);
-            }
-        });
+//        MenuItem mSearch = menu.findItem(R.id.action_search);
+//
+//        SearchView mSearchView = (SearchView) mSearch.getActionView();
+//        mSearchView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.i("SearchView", "onClick: ");
+////                Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
+////                startActivity(i);
+//            }
+//        });
 
 //        mSearchView.setQueryHint("Search");
 //        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -468,7 +473,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 //            }
 //        });
 
-        return super.onCreateOptionsMenu(menu);
+//        return super.onCreateOptionsMenu(menu);
     }
 
 //    @Override

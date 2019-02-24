@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.musicplayer.yorai.musicplayerapplication.Logic.RetrievePlaylistSQLDatabaseAsyncTask;
 import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 import com.musicplayer.yorai.musicplayerapplication.Adapters.SongListAdapter;
 import com.musicplayer.yorai.musicplayerapplication.MainActivity;
@@ -41,9 +42,10 @@ public class SongsTabFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        while (MainActivity.songDatabase == null);
+        new RetrievePlaylistSQLDatabaseAsyncTask(this).execute();
+        while (MainActivity.songArrayList == null);
         //songList = MainActivity.currentPlaylist;
-        this.songList= (ArrayList<Song>) MainActivity.songDatabase.clone();
+        this.songList= (ArrayList<Song>) MainActivity.songArrayList.clone();
         //TODO: clone instead
         MainActivity.currentPlaylist=this.songList;
 
@@ -54,7 +56,7 @@ public class SongsTabFragment extends Fragment {
         });
 
         //set data and list adapter
-        SongListAdapter mAdapter = new SongListAdapter(getActivity(), songList);
+        SongListAdapter mAdapter = new SongListAdapter(getActivity(), songList );
         recyclerView.setAdapter(mAdapter);
 
         // on item list clicked
