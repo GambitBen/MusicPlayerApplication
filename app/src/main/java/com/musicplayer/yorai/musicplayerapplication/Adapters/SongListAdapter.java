@@ -45,7 +45,7 @@ public class SongListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final Song currSong = mSongs.get(position);
             viewHolder.songView.setText(currSong.getTitle());
             viewHolder.artistView.setText(currSong.getArtist());
-            viewHolder.albumImageView.setImageBitmap(currSong.getAlbumImage(mContext));
+            //viewHolder.albumImageView.setImageBitmap(currSong.getAlbumImage(mContext));
 //            byte[] albumImage = currSong.getAlbumImage();
 //            if (albumImage != null) {
 //                Bitmap bitmap = BitmapFactory.decodeByteArray(albumImage, 0, albumImage.length);

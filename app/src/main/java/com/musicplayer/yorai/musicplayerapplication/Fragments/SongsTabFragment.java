@@ -31,6 +31,10 @@ public class SongsTabFragment extends Fragment {
         mAdapter.setOnItemClickListener(new SongListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, Song obj, int position) {
+                // tell the music service what the current playlist is
+                MainActivity.currentPlaylist=songList; // change the whole currentplaylist thing
+                MainActivity.musicSrv.setList(songList);
+                // select the song that was clicked from the current playlist
                 MainActivity.selectSong(position);
             }
         });

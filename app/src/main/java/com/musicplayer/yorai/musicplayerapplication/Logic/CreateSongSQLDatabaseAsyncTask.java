@@ -31,9 +31,11 @@ public class CreateSongSQLDatabaseAsyncTask extends AsyncTask<Void, Void, Void> 
             do {
                 String thisPath = musicCursor.getString(location);
                 if (!thisPath.equals("/storage/sdcard/Notifications/Calendar Notification.ogg")) {
-                    Song song = new Song(thisPath);
-                    myDB.add(song.getTitle(), song.getArtist(), song.getAlbum(), thisPath);
-                    Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thisPath="+thisPath);
+                    if (!myDB.exists(thisPath)) {
+                        Song song = new Song(thisPath);
+                        myDB.add(song.getTitle(), song.getArtist(), song.getAlbum(), thisPath);
+                        Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thisPath=" + thisPath);
+                    }
                 }
             }
             while (musicCursor.moveToNext());
