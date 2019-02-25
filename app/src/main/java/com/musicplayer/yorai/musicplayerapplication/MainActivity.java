@@ -28,6 +28,8 @@ import android.view.MenuItem;
 
 import com.musicplayer.yorai.musicplayerapplication.Fragments.*;
 
+import com.musicplayer.yorai.musicplayerapplication.Logic.CreateSongSQLDatabaseAsyncTask;
+import com.musicplayer.yorai.musicplayerapplication.Logic.RetrieveAllSongsSQLDatabaseAsyncTask;
 import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService.MusicBinder;
 
@@ -111,11 +113,11 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         }
 
         //SQLlite - use another thread
-        if (songArrayList == null){
-            songArrayList = new ArrayList<Song>();
-            getSongList();
-        }
-//        new RetrievePlaylistSQLDatabaseAsyncTask(this).execute();
+//        if (songArrayList == null){
+//            songArrayList = new ArrayList<Song>();
+//            getSongList();
+//        }
+        new CreateSongSQLDatabaseAsyncTask(this).execute();
     }
 
     public void startActivity() {

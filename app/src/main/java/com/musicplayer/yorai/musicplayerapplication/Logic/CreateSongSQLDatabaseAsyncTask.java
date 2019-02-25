@@ -14,7 +14,6 @@ public class CreateSongSQLDatabaseAsyncTask extends AsyncTask<Void, Void, Void> 
     DatabaseHelper myDB;
     MainActivity activity;
 
-//    public RetrievePlaylistSQLDatabaseAsyncTask(Context context) {
     public CreateSongSQLDatabaseAsyncTask(MainActivity activity) {
         this.activity = activity;
     }
@@ -35,7 +34,6 @@ public class CreateSongSQLDatabaseAsyncTask extends AsyncTask<Void, Void, Void> 
                     Song song = new Song(thisPath);
                     myDB.add(song.getTitle(), song.getArtist(), song.getAlbum(), thisPath);
                     Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thisPath="+thisPath);
-//                    Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: songPlaylist.indexOf="+songPlaylist.indexOf(song));
                 }
             }
             while (musicCursor.moveToNext());
