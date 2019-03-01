@@ -243,7 +243,10 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
                 mediaPlayerPaused = false;
                 bt_play_pause.setImageResource(R.drawable.ic_pause);
             }
-        Song song = currentPlaylist.get(position);
+        updateSong(currentPlaylist.get(position));
+    }
+
+    private static void updateSong(Song song) {
         song_title.setText(song.getTitle());
         song_artist.setText(song.getArtist());
 //        song_album_cover.setImageBitmap(song.getAlbumImage(this));
@@ -257,6 +260,11 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         }
     }
 
+
+//    public static void nextSong() {
+//        musicSrv.playNext();
+//        updateSong(musicSrv.getSong());
+//    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////ACTIVITY STATES//////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////

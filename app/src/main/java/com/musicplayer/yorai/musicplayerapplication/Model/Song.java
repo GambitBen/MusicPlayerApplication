@@ -97,4 +97,5 @@ public class Song {
         }
         return bitmap;
     }
+    public long getDuration(){return mp3file.getLengthInSeconds();}
 }

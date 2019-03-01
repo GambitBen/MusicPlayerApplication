@@ -133,6 +133,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         if(player.getCurrentPosition() > 0){
             mp.reset();
             playNext();
+            //MainActivity.nextSong();
         }
     }
     @Override

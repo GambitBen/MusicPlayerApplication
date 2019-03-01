@@ -55,7 +55,6 @@ public class PlayerDetailActivity extends AppCompatActivity {
     }
 
     private void actionHandle() {
-        // setup music component
         bt_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -72,10 +71,15 @@ public class PlayerDetailActivity extends AppCompatActivity {
             }
         });
 
-        // Listeners
         seek_song_progressbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                long totalDuration = MainActivity.musicSrv.getDuration();
+                long miliSecond = Tools.progressToTimer(progress, totalDuration);
+                // Displaying time completed playing
+                tv_song_current_duration.setText(Tools.milliSecondsToTimer(miliSecond));
+
+                seek_song_progressbar.setProgress(progress);
             }
 
             @Override
@@ -98,6 +102,21 @@ public class PlayerDetailActivity extends AppCompatActivity {
         image_album.setImageBitmap(musicSong.getAlbumImage(this));
         ((TextView) findViewById(R.id.song_title)).setText(musicSong.getTitle());
         ((TextView) findViewById(R.id.song_artist)).setText(musicSong.getArtist());
+//        seek_song_progressbar.setMax((int) musicSong.getDuration());
+    }
+
+    private void updateTimerAndSeekbar() {
+        long totalDuration = MainActivity.musicSrv.getDuration();
+        long currentPosition = MainActivity.musicSrv.getCurrentPosition();
+
+        // Displaying Total Duration time
+        tv_song_total_duration.setText(Tools.milliSecondsToTimer(totalDuration));
+        // Displaying time completed playing
+        tv_song_current_duration.setText(Tools.milliSecondsToTimer(currentPosition));
+
+        // Updating progress bar
+        int progress = (int) (Tools.getProgressSeekBar(currentPosition, totalDuration));
+        seek_song_progressbar.setProgress(progress);
     }
 
     public void controlClick(View v) {
@@ -136,20 +155,6 @@ public class PlayerDetailActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    private void updateTimerAndSeekbar() {
-        long totalDuration = MainActivity.musicSrv.getDuration();
-        long currentDuration = MainActivity.musicSrv.getCurrentPosition();
-
-        // Displaying Total Duration time
-        tv_song_total_duration.setText(Tools.milliSecondsToTimer(totalDuration));
-        // Displaying time completed playing
-        tv_song_current_duration.setText(Tools.milliSecondsToTimer(currentDuration));
-
-        // Updating progress bar
-        int progress = (int) (Tools.getProgressSeekBar(currentDuration, totalDuration));
-        seek_song_progressbar.setProgress(progress);
     }
 
     @Override
