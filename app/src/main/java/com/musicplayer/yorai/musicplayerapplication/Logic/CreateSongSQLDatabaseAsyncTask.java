@@ -45,6 +45,6 @@ public class CreateSongSQLDatabaseAsyncTask extends AsyncTask<Void, Void, Void> 
 
     @Override
     protected void onPostExecute(Void param) {
-        activity.startActivity();
+        activity.populateActivity();
     }
 }

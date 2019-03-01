@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 
     //public static MusicController controller;
 
-    private static boolean mediaPlayerPaused = false;
+    private static boolean mediaPlayerPaused = true;
     //private static boolean playbackPaused = false;
 
     //connect to the service
@@ -118,11 +118,19 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 //            getSongList();
 //        }
         new CreateSongSQLDatabaseAsyncTask(this).execute();
-    }
-
-    public void startActivity() {
         initComponent();
         actionHandle();
+    }
+
+    public void populateActivity() {
+        setupViewPager(mViewPager);
+        tabLayout.setupWithViewPager(mViewPager);
+
+        currentPlaylist = new ArrayList<Song>(); //maybe i should comment this out
+
+        tabLayout.getTabAt(0).setText("Songs");
+        tabLayout.getTabAt(1).setText("Artists");
+        tabLayout.getTabAt(2).setText("Albums");
     }
 
     //change songArrayList to songArrayList
@@ -141,15 +149,6 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         bt_next = (ImageView) findViewById(R.id.bt_next);
         song_title = (TextView) findViewById(R.id.song_title);
         song_artist = (TextView) findViewById(R.id.song_artist);
-
-        setupViewPager(mViewPager);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        currentPlaylist = new ArrayList<Song>(); //maybe i should comment this out
-
-        tabLayout.getTabAt(0).setText("Songs");
-        tabLayout.getTabAt(1).setText("Artists");
-        tabLayout.getTabAt(2).setText("Albums");
     }
 
     private void actionHandle() {
@@ -173,13 +172,13 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
             @Override
             public void onClick(View arg0) {
                 // check for already playing
-                if (!mediaPlayerPaused) {
-                    mediaPlayerPaused = true;
-                    musicSrv.pausePlayer();
-                    bt_play_pause.setImageResource(R.drawable.ic_pause);
-                } else {
+                if (mediaPlayerPaused) {
                     mediaPlayerPaused = false;
                     musicSrv.startPlayer();
+                    bt_play_pause.setImageResource(R.drawable.ic_pause);
+                } else {
+                    mediaPlayerPaused = true;
+                    musicSrv.pausePlayer();
                     bt_play_pause.setImageResource(R.drawable.ic_play);
                 }
             }
@@ -284,15 +283,15 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     @Override
     protected void onPause(){
         super.onPause();
-        mediaPlayerPaused =true;
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        if(mediaPlayerPaused){
-            //setController();
-            mediaPlayerPaused =false;
+        if (MainActivity.isMediaPlayerPaused()) {
+            bt_play_pause.setImageResource(R.drawable.ic_play);
+        } else {
+            bt_play_pause.setImageResource(R.drawable.ic_pause);
         }
     }
 
@@ -457,7 +456,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 //            public void onClick(View v) {
 //                Log.i("SearchView", "onClick: ");
 ////                Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
-////                startActivity(i);
+////                populateActivity(i);
 //            }
 //        });
 

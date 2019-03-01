@@ -1,21 +1,12 @@
 package com.musicplayer.yorai.musicplayerapplication;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -29,7 +20,7 @@ public class PlayerDetailActivity extends AppCompatActivity {
     public View parent_view;
 
     private ImageView image_album;
-    private ImageView bt_play;
+    private ImageView bt_play_pause;
     private AppCompatSeekBar seek_song_progressbar;
     private TextView tv_song_current_duration, tv_song_total_duration;
 
@@ -53,30 +44,30 @@ public class PlayerDetailActivity extends AppCompatActivity {
         seek_song_progressbar.setMax(Tools.MAX_PROGRESS);
 
         image_album = (ImageView) findViewById(R.id.song_album_cover);
-        bt_play = (ImageView) findViewById(R.id.bt_play_pause);
+        bt_play_pause = (ImageView) findViewById(R.id.bt_play_pause);
         changeMusicInfo(MainActivity.musicSrv.getSong());
         if (MainActivity.isMediaPlayerPaused()) {
-            bt_play.setImageResource(R.drawable.ic_pause);
+            bt_play_pause.setImageResource(R.drawable.ic_play);
         } else {
-            bt_play.setImageResource(R.drawable.ic_play);
+            bt_play_pause.setImageResource(R.drawable.ic_pause);
         }
         updateTimerAndSeekbar();
     }
 
     private void actionHandle() {
         // setup music component
-        bt_play.setOnClickListener(new View.OnClickListener() {
+        bt_play_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 // check for already playing
-                if (!MainActivity.isMediaPlayerPaused()) {
-                    MainActivity.setMediaPlayerPaused(true);
-                    MainActivity.musicSrv.pausePlayer();
-                    bt_play.setImageResource(R.drawable.ic_pause);
-                } else {
+                if (MainActivity.isMediaPlayerPaused()) {
                     MainActivity.setMediaPlayerPaused(false);
                     MainActivity.musicSrv.startPlayer();
-                    bt_play.setImageResource(R.drawable.ic_play);
+                    bt_play_pause.setImageResource(R.drawable.ic_pause);
+                } else {
+                    MainActivity.setMediaPlayerPaused(true);
+                    MainActivity.musicSrv.pausePlayer();
+                    bt_play_pause.setImageResource(R.drawable.ic_play);
                 }
             }
         });
@@ -159,5 +150,15 @@ public class PlayerDetailActivity extends AppCompatActivity {
         // Updating progress bar
         int progress = (int) (Tools.getProgressSeekBar(currentDuration, totalDuration));
         seek_song_progressbar.setProgress(progress);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if (MainActivity.isMediaPlayerPaused()) {
+            bt_play_pause.setImageResource(R.drawable.ic_play);
+        } else {
+            bt_play_pause.setImageResource(R.drawable.ic_pause);
+        }
     }
 }
