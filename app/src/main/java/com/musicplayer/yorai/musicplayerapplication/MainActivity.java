@@ -1,10 +1,12 @@
 package com.musicplayer.yorai.musicplayerapplication;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -15,6 +17,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.app.Fragment;
@@ -291,6 +294,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     @Override
     protected void onPause(){
         super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotice);
     }
 
     @Override
@@ -301,6 +305,9 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         } else {
             bt_play_pause.setImageResource(R.drawable.ic_pause);
         }
+        IntentFilter iff= new IntentFilter();
+        LocalBroadcastManager.getInstance(this).registerReceiver(onNotice, iff);
+        //get current song
     }
 
     @Override
@@ -314,7 +321,16 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         moveTaskToBack(true);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    private BroadcastReceiver onNotice= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // intent can contain anydata
+
+        }
+    };
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////MEDIA PLAYER CONTROL/////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 

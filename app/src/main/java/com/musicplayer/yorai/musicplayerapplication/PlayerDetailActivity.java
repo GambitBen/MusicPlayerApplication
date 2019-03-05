@@ -1,7 +1,12 @@
 package com.musicplayer.yorai.musicplayerapplication;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.view.Menu;
@@ -158,6 +163,12 @@ public class PlayerDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause(){
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotice);
+    }
+
+    @Override
     protected void onResume(){
         super.onResume();
         if (MainActivity.isMediaPlayerPaused()) {
@@ -165,5 +176,16 @@ public class PlayerDetailActivity extends AppCompatActivity {
         } else {
             bt_play_pause.setImageResource(R.drawable.ic_pause);
         }
+        IntentFilter iff= new IntentFilter();
+        LocalBroadcastManager.getInstance(this).registerReceiver(onNotice, iff);
+        //get current song
     }
+
+    private BroadcastReceiver onNotice= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // intent can contain anydata
+
+        }
+    };
 }

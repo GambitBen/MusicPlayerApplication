@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 import com.musicplayer.yorai.musicplayerapplication.MainActivity;
@@ -134,6 +135,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             mp.reset();
             playNext();
             //MainActivity.nextSong();
+            Log.d("sohail","onHandleIntent called");
+            Intent in=new Intent();  //you can put anything in it with putExtra
+            Log.d("sohail","sending broadcast");
+            LocalBroadcastManager.getInstance(this).sendBroadcast(in);
         }
     }
     @Override
