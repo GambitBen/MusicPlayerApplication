@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +58,9 @@ public class PlayerDetailActivity extends AppCompatActivity {
             bt_play_pause.setImageResource(R.drawable.ic_pause);
         }
         updateTimerAndSeekbar();
+
+        IntentFilter iff= new IntentFilter("custom-event-name");
+        LocalBroadcastManager.getInstance(this).registerReceiver(onNotice, iff);
     }
 
     private void actionHandle() {
@@ -102,12 +106,17 @@ public class PlayerDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void changeMusicInfo(String musicSongPath) {
+        changeMusicInfo(new Song(musicSongPath));
+    }
+
     private void changeMusicInfo(Song musicSong) {
         if (musicSong == null) return;
         image_album.setImageBitmap(musicSong.getAlbumImage(this));
         ((TextView) findViewById(R.id.song_title)).setText(musicSong.getTitle());
         ((TextView) findViewById(R.id.song_artist)).setText(musicSong.getArtist());
 //        seek_song_progressbar.setMax((int) musicSong.getDuration());
+        updateTimerAndSeekbar();
     }
 
     private void updateTimerAndSeekbar() {
@@ -160,12 +169,12 @@ public class PlayerDetailActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotice);
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotice);
     }
 
     @Override
@@ -176,15 +185,20 @@ public class PlayerDetailActivity extends AppCompatActivity {
         } else {
             bt_play_pause.setImageResource(R.drawable.ic_pause);
         }
-        IntentFilter iff= new IntentFilter();
+        IntentFilter iff= new IntentFilter("custom-event-name");
         LocalBroadcastManager.getInstance(this).registerReceiver(onNotice, iff);
         //get current song
     }
 
     private BroadcastReceiver onNotice= new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
-            // intent can contain anydata
+
+            String songPath = intent.getStringExtra("songPath");
+            if (songPath != null) {
+                changeMusicInfo(songPath);
+            }
 
         }
     };

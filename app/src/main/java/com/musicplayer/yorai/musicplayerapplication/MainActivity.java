@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -152,6 +153,9 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         bt_next = (ImageView) findViewById(R.id.bt_next);
         song_title = (TextView) findViewById(R.id.song_title);
         song_artist = (TextView) findViewById(R.id.song_artist);
+
+        IntentFilter iff= new IntentFilter("custom-event-name");
+        LocalBroadcastManager.getInstance(this).registerReceiver(onNotice, iff);
     }
 
     private void actionHandle() {
@@ -248,6 +252,9 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
             }
         updateSong(currentPlaylist.get(position));
     }
+    private static void updateSong(String songPath) {
+        updateSong(new Song(songPath));
+    }
 
     private static void updateSong(Song song) {
         song_title.setText(song.getTitle());
@@ -284,17 +291,17 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         if (musicBound)
             unbindService(musicConnection);
         stopService(playIntent);
         musicSrv=null;
-        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotice);
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(onNotice);
     }
 
     @Override
@@ -305,7 +312,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         } else {
             bt_play_pause.setImageResource(R.drawable.ic_pause);
         }
-        IntentFilter iff= new IntentFilter();
+        IntentFilter iff= new IntentFilter("custom-event-name");
         LocalBroadcastManager.getInstance(this).registerReceiver(onNotice, iff);
         //get current song
     }
@@ -322,12 +329,18 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     }
 
     private BroadcastReceiver onNotice= new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
-            // intent can contain anydata
+
+            String songPath = intent.getStringExtra("songPath");
+            if (songPath != null) {
+                updateSong(songPath);
+            }
 
         }
     };
+
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////

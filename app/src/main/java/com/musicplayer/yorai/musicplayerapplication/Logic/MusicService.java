@@ -77,6 +77,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public void playSong(){
+//        Log.d("------------songPosn","songPosn = " + songPosn);
+//        Log.d("------------getCurrentPosition","getCurrentPosition = " + getCurrentPosition());
         //play a song
         player.reset();
         //get song
@@ -103,6 +105,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Intent in=new Intent("custom-event-name");  //you can put anything in it with putExtra
+        in.putExtra("songPath",songPath);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(in);
+
     }
 
     @Override
@@ -134,11 +141,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         if(player.getCurrentPosition() > 0){
             mp.reset();
             playNext();
-            //MainActivity.nextSong();
-            Log.d("sohail","onHandleIntent called");
-            Intent in=new Intent();  //you can put anything in it with putExtra
-            Log.d("sohail","sending broadcast");
-            LocalBroadcastManager.getInstance(this).sendBroadcast(in);
         }
     }
     @Override
