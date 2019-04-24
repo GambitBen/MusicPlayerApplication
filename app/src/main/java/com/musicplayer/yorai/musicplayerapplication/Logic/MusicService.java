@@ -68,6 +68,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void initMusicPlayer(){
         //set player properties
         player.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        //deprecated method
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         //set listeners

@@ -25,6 +25,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -40,6 +41,7 @@ import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService.MusicBind
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService;
 
@@ -483,19 +485,21 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
-        return true;
 
-//        MenuItem mSearch = menu.findItem(R.id.action_search);
-//
-//        SearchView mSearchView = (SearchView) mSearch.getActionView();
-//        mSearchView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.i("SearchView", "onClick: ");
-////                Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
-////                populateActivity(i);
-//            }
-//        });
+        //return true;
+
+        MenuItem mSearch = menu.findItem(R.id.action_search);
+
+        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        mSearchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "onClick", Toast.LENGTH_SHORT).show();
+                Log.i("SearchView", "onClick: ");
+//                Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
+//                populateActivity(i);
+            }
+        });
 
 //        mSearchView.setQueryHint("Search");
 //        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -512,6 +516,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 //        });
 
 //        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
 //    @Override
