@@ -61,18 +61,19 @@ public class SearchActivity  extends AppCompatActivity implements SearchView.OnQ
         // specify an adapter
         mAdapter = new SongListAdapter(this, MainActivity.currentPlaylist);
         mRecyclerView.setAdapter(mAdapter);
-
-        onNewIntent(getIntent());
+        mQuery = getIntent().getStringExtra("Query");
+//        onNewIntent(getIntent());
+        doSearch(mQuery);
     }
 
-    protected void onNewIntent(Intent intent) {
-        String action = intent.getAction();
-        if (action.equals(Intent.ACTION_SEARCH) ||
-                action.equals(GMS_SEARCH_ACTION)) {
-            mQuery = intent.getStringExtra(SearchManager.QUERY);
-            doSearch(mQuery);
-        }
-    }
+//    protected void onNewIntent(Intent intent) {
+//        String action = intent.getAction();
+//        if (action.equals(Intent.ACTION_SEARCH) ||
+//                action.equals(GMS_SEARCH_ACTION)) {
+//            mQuery = intent.getStringExtra(SearchManager.QUERY);
+//            doSearch(mQuery);
+//        }
+//    }
 
     private void doSearch(String query) {
         query = query.toLowerCase();
@@ -152,15 +153,15 @@ public class SearchActivity  extends AppCompatActivity implements SearchView.OnQ
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.search, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView) searchItem.getActionView();
-        setupSearchView(searchItem);
-
-        if (mQuery != null) {
-            mSearchView.setQuery(mQuery, false);
-        }
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.search, menu);
+//        MenuItem searchItem = menu.findItem(R.id.action_search);
+//        mSearchView = (SearchView) searchItem.getActionView();
+//        setupSearchView(searchItem);
+//
+//        if (mQuery != null) {
+//            mSearchView.setQuery(mQuery, false);
+//        }
 
         return true;
     }

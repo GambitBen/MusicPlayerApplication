@@ -32,6 +32,10 @@
             android:name=".PlayerDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
 
+        <activity
+            android:name=".SearchActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+
         <!-- A Service class for music playback -->
         <service android:name="com.musicplayer.yorai.musicplayerapplication.Logic.MusicService" />
     </application>

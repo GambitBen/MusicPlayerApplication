@@ -196,8 +196,10 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         song_album_cover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
-                startActivity(i);
+                if (musicSrv.getSong() != null) {
+                    Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
+                    startActivity(i);
+                }
             }
         });
     }
@@ -485,21 +487,35 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search, menu);
-
-        //return true;
-
         MenuItem mSearch = menu.findItem(R.id.action_search);
-
         SearchView mSearchView = (SearchView) mSearch.getActionView();
-        mSearchView.setOnClickListener(new View.OnClickListener() {
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onQueryTextSubmit(String query) {
                 Toast.makeText(MainActivity.this, "onClick", Toast.LENGTH_SHORT).show();
-                Log.i("SearchView", "onClick: ");
-//                Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
-//                populateActivity(i);
+                Log.d("SearchView", "ENTER HERE ------------------------------------------------------");
+                Intent i = new Intent(getApplicationContext(), SearchActivity.class);
+                i.putExtra("Query", query);
+                startActivity(i);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
+//
+//        mSearchView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(MainActivity.this, "onClick", Toast.LENGTH_SHORT).show();
+//                Log.i("SearchView", "onClick: ");
+////                Intent i = new Intent(getApplicationContext(), PlayerDetailActivity.class);
+////                populateActivity(i);
+//            }
+//        });
 
 //        mSearchView.setQueryHint("Search");
 //        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -516,7 +532,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 //        });
 
 //        return super.onCreateOptionsMenu(menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
 //    @Override

@@ -51,7 +51,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         //create the service
         super.onCreate();
         //initialize position
-        songPosn=0;
+        songPosn=-1;
         //create player
         player = new MediaPlayer();
         //initialize player
@@ -154,6 +154,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public Song getSong(){
+        if (songPosn == -1)
+            return null;
         return currentPlaylist.get(songPosn);
     }
 
