@@ -498,6 +498,8 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
                 Intent i = new Intent(getApplicationContext(), SearchActivity.class);
                 i.putExtra("Query", query);
                 startActivity(i);
+                mSearch.collapseActionView();
+                mSearchView.clearFocus();
                 return true;
             }
 
@@ -506,6 +508,8 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
                 return false;
             }
         });
+        return super.onCreateOptionsMenu(menu);
+    }
 //
 //        mSearchView.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -532,8 +536,8 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 //        });
 
 //        return super.onCreateOptionsMenu(menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
