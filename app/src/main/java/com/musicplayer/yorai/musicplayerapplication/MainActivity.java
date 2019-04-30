@@ -3,19 +3,15 @@ package com.musicplayer.yorai.musicplayerapplication;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
-import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -34,7 +30,6 @@ import android.view.MenuItem;
 import com.musicplayer.yorai.musicplayerapplication.Fragments.*;
 
 import com.musicplayer.yorai.musicplayerapplication.Logic.CreateSongSQLDatabaseAsyncTask;
-import com.musicplayer.yorai.musicplayerapplication.Logic.RetrieveAllSongsSQLDatabaseAsyncTask;
 import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 import com.musicplayer.yorai.musicplayerapplication.Logic.MusicService.MusicBinder;
 
@@ -73,9 +68,9 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     private static TextView song_title;
     private static TextView song_artist;
 
-
-    public static ArrayList<Song> currentPlaylist;
-    public static ArrayList<Song> songArrayList;
+    // todo: check if i can create a method in the main activity to communicate with the current playlist in the music service instead of saving 2 instances of currentplaylist
+//    public static ArrayList<Song> currentPlaylist;
+    public static ArrayList<Song> playlistToSearch;
 
     public static MusicService musicSrv;
     private Intent playIntent;
@@ -87,23 +82,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
     //private static boolean playbackPaused = false;
 
     //connect to the service
-    private ServiceConnection musicConnection = new ServiceConnection(){
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MusicBinder binder = (MusicBinder)service;
-            //get service
-            musicSrv = binder.getService();
-            //pass list
-            musicSrv.setList(currentPlaylist);
-            musicBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            musicBound = false;
-        }
-    };
+    private ServiceConnection musicConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +102,25 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 //            songArrayList = new ArrayList<Song>();
 //            getSongList();
 //        }
+        musicConnection = new ServiceConnection(){
+
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                MusicBinder binder = (MusicBinder)service;
+                //get service
+                musicSrv = binder.getService();
+                //pass list
+//                musicSrv.setCurrentPlaylist(currentPlaylist);
+                musicBound = true;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                musicBound = false;
+            }
+        };
+
+
         new CreateSongSQLDatabaseAsyncTask(this).execute();
         initComponent();
         actionHandle();
@@ -132,16 +130,11 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         setupViewPager(mViewPager);
         tabLayout.setupWithViewPager(mViewPager);
 
-        currentPlaylist = new ArrayList<Song>(); //maybe i should comment this out
+//        currentPlaylist = new ArrayList<Song>(); //maybe i should comment this out
 
         tabLayout.getTabAt(0).setText("Songs");
         tabLayout.getTabAt(1).setText("Artists");
         tabLayout.getTabAt(2).setText("Albums");
-    }
-
-    //change songArrayList to songArrayList
-    public void setSongArraylist(ArrayList<Song> songArrayList){
-        this.songArrayList = songArrayList;
     }
 
     private void initComponent() {
@@ -204,36 +197,36 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         });
     }
 
-    private void getSongList() {
-        //retrieve song info
-        ContentResolver contentResolver = getContentResolver();
-        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = contentResolver.query(musicUri, null, null, null, null);
-        //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor.moveToFirst() "+musicCursor.moveToFirst());
-        //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor!=null "+(musicCursor!=null));
-        if(musicCursor!=null && musicCursor.moveToFirst()){
-            //get columns
-//            int titleColumn = musicCursor.getColumnIndex
-//                    (MediaStore.Audio.Media.TITLE);
-//            int idColumn = musicCursor.getColumnIndex
-//                    (MediaStore.Audio.Media._ID);
-//            int artistColumn = musicCursor.getColumnIndex
-//                    (MediaStore.Audio.Media.ARTIST);
-            int location = musicCursor.getColumnIndex
-                    (MediaStore.Audio.Media.DATA);
-            //add songs to list
-            do {
-                String thisPath = musicCursor.getString(location);
-                //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thiId="+thisPath);
-//                long thisId = musicCursor.getLong(idColumn);
-//                String thisTitle = musicCursor.getString(titleColumn);
-//                String thisArtist = musicCursor.getString(artistColumn);
-                if (!thisPath.equals("/storage/sdcard/Notifications/Calendar Notification.ogg"))
-                    songArrayList.add(new Song(thisPath));//, thisId, thisTitle, thisArtist));
-            }
-            while (musicCursor.moveToNext());
-        }
-    }
+//    private void getSongList() {
+//        //retrieve song info
+//        ContentResolver contentResolver = getContentResolver();
+//        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+//        Cursor musicCursor = contentResolver.query(musicUri, null, null, null, null);
+//        //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor.moveToFirst() "+musicCursor.moveToFirst());
+//        //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: musicCursor!=null "+(musicCursor!=null));
+//        if(musicCursor!=null && musicCursor.moveToFirst()){
+//            //get columns
+////            int titleColumn = musicCursor.getColumnIndex
+////                    (MediaStore.Audio.Media.TITLE);
+////            int idColumn = musicCursor.getColumnIndex
+////                    (MediaStore.Audio.Media._ID);
+////            int artistColumn = musicCursor.getColumnIndex
+////                    (MediaStore.Audio.Media.ARTIST);
+//            int location = musicCursor.getColumnIndex
+//                    (MediaStore.Audio.Media.DATA);
+//            //add songs to list
+//            do {
+//                String thisPath = musicCursor.getString(location);
+//                //Log.d("!!!!!!!!!!!!!!!!!!!!", "getSongList: thiId="+thisPath);
+////                long thisId = musicCursor.getLong(idColumn);
+////                String thisTitle = musicCursor.getString(titleColumn);
+////                String thisArtist = musicCursor.getString(artistColumn);
+//                if (!thisPath.equals("/storage/sdcard/Notifications/Calendar Notification.ogg"))
+//                    songArrayList.add(new Song(thisPath));//, thisId, thisTitle, thisArtist));
+//            }
+//            while (musicCursor.moveToNext());
+//        }
+//    }
 
     public static boolean isMediaPlayerPaused() {
         return mediaPlayerPaused;
@@ -248,13 +241,14 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 //    }
 
     public static void selectSong(int position){
-            musicSrv.setSong(position);
-            musicSrv.playSong();
-            if(mediaPlayerPaused) {
-                mediaPlayerPaused = false;
-                bt_play_pause.setImageResource(R.drawable.ic_pause);
-            }
-        updateSong(currentPlaylist.get(position));
+        musicSrv.setSong(position);
+        musicSrv.playSong();
+        if(mediaPlayerPaused) {
+            mediaPlayerPaused = false;
+            bt_play_pause.setImageResource(R.drawable.ic_pause);
+        }
+//        updateSong(currentPlaylist.get(position));
+        updateSong(musicSrv.getSong());
     }
     private static void updateSong(String songPath) {
         updateSong(new Song(songPath));
@@ -347,7 +341,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 
 
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////MEDIA PLAYER CONTROL/////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 

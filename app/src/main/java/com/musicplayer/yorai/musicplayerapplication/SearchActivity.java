@@ -3,21 +3,18 @@ package com.musicplayer.yorai.musicplayerapplication;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.SearchView;
 
 import com.musicplayer.yorai.musicplayerapplication.Adapters.SongListAdapter;
-import com.musicplayer.yorai.musicplayerapplication.Logic.DatabaseHelper;
 import com.musicplayer.yorai.musicplayerapplication.Logic.Metaphone;
 import com.musicplayer.yorai.musicplayerapplication.Model.Song;
 
@@ -31,6 +28,7 @@ public class SearchActivity  extends AppCompatActivity implements SearchView.OnQ
     private RecyclerView mRecyclerView;
     private SongListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private View rootView;
 
     private SearchView mSearchView;
     private String mQuery;
@@ -44,7 +42,9 @@ public class SearchActivity  extends AppCompatActivity implements SearchView.OnQ
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_search);
 
-        baseSearchPlaylist = (ArrayList<Song>) MainActivity.currentPlaylist.clone();
+        baseSearchPlaylist = (ArrayList<Song>) MainActivity.playlistToSearch.clone();
+        searchResultsPlaylist = (ArrayList<Song>) baseSearchPlaylist.clone();
+        Log.d("SEARCH ACTIVITY``````````````````````````", "baseSearchPlaylist = " + baseSearchPlaylist.toString());
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
@@ -55,54 +55,82 @@ public class SearchActivity  extends AppCompatActivity implements SearchView.OnQ
         // use a grid layout manager
         //int numColumns = getResources().getInteger(R.integer.search_results_columns);
         int numColumns = 1;
-        mLayoutManager = new GridLayoutManager(this, numColumns);
+        mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter
-        mAdapter = new SongListAdapter(this, MainActivity.currentPlaylist);
+        mAdapter = new SongListAdapter(this, searchResultsPlaylist);
+
+        mAdapter.setOnItemClickListener(new SongListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, Song obj, int position) {
+                // tell the music service what the current playlist is
+//                MainActivity.currentPlaylist = (ArrayList<Song>) searchResultsPlaylist.clone(); // change the whole currentplaylist thing, clone because this activity is temporary
+                MainActivity.musicSrv.setCurrentPlaylist(searchResultsPlaylist);
+                // select the song that was clicked from the current playlist
+                MainActivity.selectSong(position);
+            }
+        });
+
+
         mRecyclerView.setAdapter(mAdapter);
         mQuery = getIntent().getStringExtra("Query");
-//        onNewIntent(getIntent());
         doSearch(mQuery);
     }
 
-//    protected void onNewIntent(Intent intent) {
-//        String action = intent.getAction();
-//        if (action.equals(Intent.ACTION_SEARCH) ||
-//                action.equals(GMS_SEARCH_ACTION)) {
-//            mQuery = intent.getStringExtra(SearchManager.QUERY);
-//            doSearch(mQuery);
-//        }
-//    }
-
     private void doSearch(String query) {
         query = query.toLowerCase();
-        searchResultsPlaylist = new ArrayList<Song>();
+        searchResultsPlaylist.clear();
         //create a map to index a song according to the similarityEstimation to insert in the correct order
         //ArrayList<Double> similarityEstimationIndexlist = new ArrayList<Double>();
         mAdapter.clearResults();
+        Log.d("~~~~~~~~~1~~~~~~~~~~", "doSearch: clearResults");
 
         Metaphone metaphone = new Metaphone();
         String inquiry;
-        double similarityEstimation;
+        double similarityEstimation = 0;
         int i = 0;
         int index = 0;
         while (i < baseSearchPlaylist.size()) {
             Song song = baseSearchPlaylist.get(i);
+            similarityEstimation = 0;
             i++;
             //search by title for now
             inquiry = song.getTitle().toLowerCase();
-            if (metaphone.isMetaphoneEqual(query, inquiry))
+            Log.d("~~~~~~~~2~~~~~~~~~~~", "doSearch: query = " + query + " ||| inquiry = " + inquiry);
+            if (inquiry.contains(query)) {
                 similarityEstimation = 100;
-            else
-                similarityEstimation = calculateDistance(query, inquiry);
+                Log.d("!!!!!!!!!!!!!!!!!!!!!!!!!", "inquiry.contains(query) " + inquiry.contains(query));
+            }
+            // todo: split string and compare with metaphone, also (maybe) create a similarityEstimation for metaphone
+            else if (metaphone.isMetaphoneEqual(query, inquiry)) {
+                similarityEstimation = 90;
+                Log.d("!!!!!!!!!!!!!!!!!!!!!!!!!", "metaphone.isMetaphoneEqual(query, inquiry) " + metaphone.isMetaphoneEqual(query, inquiry));
 
-            if (similarityEstimation > 80) {
+            }
+            else {
+                for (String subInquiry : inquiry.split("\\s+")) {
+                    Log.d("         .", "subInquiry: " + subInquiry);
+                    Log.d("         .", "calculateDistance: " + calculateDistance(query, subInquiry));
+                    similarityEstimation = Math.max(similarityEstimation, calculateDistance(query, subInquiry));
+                }
+                Log.d("~~~~~~~~~~~~~~~~~~~~", "calculateDistance: " + similarityEstimation);
+            }
+
+            // will allow up to 15% inaccuracy
+            if (similarityEstimation > 85) {
+//            if (similarityEstimation >= 50) {
+                // todo: order/insert order searchResultsPlaylist by similarityEstimation
                 searchResultsPlaylist.add(song);
+                //probably call method to update recyclerview here
+                Log.d("$$$$$$$$$$$$$$", "ADD SONG " + song.getTitle());
             }
         }
 
-        MainActivity.currentPlaylist = searchResultsPlaylist;
+//        MainActivity.currentPlaylist = searchResultsPlaylist;
+
+        //call method to update recyclerview here
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -142,10 +170,10 @@ public class SearchActivity  extends AppCompatActivity implements SearchView.OnQ
             }
         }
         //return dist[sourceLength][targetLength];
-        double similarityEstimation = sourceLength;
+        double similarityEstimation = Math.max(sourceLength, targetLength);
         similarityEstimation = similarityEstimation - dist[sourceLength][targetLength];
         similarityEstimation = similarityEstimation / Math.min(sourceLength, targetLength);
-        similarityEstimation = similarityEstimation*100;
+        similarityEstimation = similarityEstimation * 100;
         return similarityEstimation;
     }
 

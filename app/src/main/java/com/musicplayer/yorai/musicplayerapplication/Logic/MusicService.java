@@ -159,8 +159,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return currentPlaylist.get(songPosn);
     }
 
-    public void setList(ArrayList<Song> theSongs){
+    public void setCurrentPlaylist(ArrayList<Song> theSongs){
         currentPlaylist = theSongs;
+    }
+
+    public ArrayList<Song> getCurrentPlaylist(){
+        return currentPlaylist;
     }
 
     public class MusicBinder extends Binder {

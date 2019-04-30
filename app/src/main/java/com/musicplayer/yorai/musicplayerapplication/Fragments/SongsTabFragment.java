@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +33,8 @@ public class SongsTabFragment extends Fragment {
             @Override
             public void onItemClick(View view, Song obj, int position) {
                 // tell the music service what the current playlist is
-                MainActivity.currentPlaylist=songList; // change the whole currentplaylist thing
-                MainActivity.musicSrv.setList(songList);
+//                MainActivity.currentPlaylist = songList; // change the whole currentplaylist thing
+                MainActivity.musicSrv.setCurrentPlaylist(songList);
                 // select the song that was clicked from the current playlist
                 MainActivity.selectSong(position);
             }
@@ -66,4 +67,10 @@ public class SongsTabFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        MainActivity.playlistToSearch = songList;
+        Log.d("SONG TAB FRAGMENT``````````````````````````", "change viewed playlist" + this.getTag());
+    }
 }

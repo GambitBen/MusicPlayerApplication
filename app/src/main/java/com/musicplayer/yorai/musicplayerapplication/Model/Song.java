@@ -68,10 +68,24 @@ public class Song {
     }
 
     public String getPath(){return path;}
-//    public long getID(){return id;}
+    //    public long getID(){return id;}
     public String getTrack(){return id3v2Tag.getTrack();}
-    public String getArtist(){return id3v2Tag.getArtist();}
-    public String getTitle(){return id3v2Tag.getTitle();}
+    public String getArtist(){
+        String artist = id3v2Tag.getArtist();
+        if (artist == null)
+            artist = "Unknown";
+        return artist;
+    }
+    public String getTitle(){
+        String title = id3v2Tag.getTitle();
+        if (title == null) {
+            title = mp3file.getFilename();
+            // instead of the full path take only the file name
+            // from the last '/' until before the ".mp3"
+            title = title.substring(title.lastIndexOf('/') + 1, title.length() - 4);
+        }
+        return title;
+    }
     public String getAlbum(){return id3v2Tag.getAlbum();}
     public String getYear(){return id3v2Tag.getYear();}
     public int getGenre(){return id3v2Tag.getGenre();}
