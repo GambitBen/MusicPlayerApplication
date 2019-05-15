@@ -242,6 +242,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
 
     public static void selectSong(int position){
         musicSrv.setSong(position);
+        musicSrv.resetPlayer();
         musicSrv.playSong();
         if(mediaPlayerPaused) {
             mediaPlayerPaused = false;
@@ -548,7 +549,7 @@ public class MainActivity extends AppCompatActivity {//implements MediaPlayerCon
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_tags) {
             return true;
         }
 

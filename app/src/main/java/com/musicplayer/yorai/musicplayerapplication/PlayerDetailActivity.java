@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -159,8 +158,11 @@ public class PlayerDetailActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             finish();
-        } else if(id == R.id.action_settings){
-            Toast.makeText(this, "Settings Clicked", Toast.LENGTH_SHORT).show();
+        } else if(id == R.id.action_tags){
+            Intent i = new Intent(getApplicationContext(), EditSongTagsActivity.class);
+            i.putExtra("Song", MainActivity.musicSrv.getSong().getPath());
+            startActivity(i);
+            //Toast.makeText(this, "Settings Clicked", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -11,6 +11,7 @@ import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.ID3v24Tag;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.NotSupportedException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import com.musicplayer.yorai.musicplayerapplication.Logic.DatabaseHelper;
 import com.musicplayer.yorai.musicplayerapplication.MainActivity;
@@ -63,8 +64,6 @@ public class Song {
             }
             mp3file.setId3v2Tag(id3v2Tag);
         }
-
-
     }
 
     public String getPath(){return path;}
@@ -88,6 +87,7 @@ public class Song {
     }
     public String getAlbum(){return id3v2Tag.getAlbum();}
     public String getYear(){return id3v2Tag.getYear();}
+    public void setYear(String year){id3v2Tag.setYear(year);}
     public int getGenre(){return id3v2Tag.getGenre();}
     public String getGenreDescription(){return id3v2Tag.getGenreDescription();}
     public String getComment(){return id3v2Tag.getComment();}
@@ -112,4 +112,14 @@ public class Song {
         return bitmap;
     }
     public long getDuration(){return mp3file.getLengthInSeconds();}
+
+    public void save(String path) {
+        try {
+            mp3file.save(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
 }

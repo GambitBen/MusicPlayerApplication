@@ -77,11 +77,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         player.setOnErrorListener(this);
     }
 
+    public void resetPlayer() {
+        player.reset();
+    }
+
     public void playSong(){
 //        Log.d("------------songPosn","songPosn = " + songPosn);
 //        Log.d("------------getCurrentPosition","getCurrentPosition = " + getCurrentPosition());
         //play a song
-        player.reset();
+        //player.reset();
         //get song
         Song playSong = currentPlaylist.get(songPosn);
         //get song path
@@ -203,14 +207,16 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public void playPrev(){
         songPosn--;
-        if(songPosn<0) songPosn= currentPlaylist.size()-1;
+        if(songPosn<0) songPosn = currentPlaylist.size() - 1;
+        resetPlayer();
         playSong();
     }
 
     //skip to next
     public void playNext(){
         songPosn++;
-        if(songPosn>= currentPlaylist.size()) songPosn=0;
+        if(songPosn >= currentPlaylist.size()) songPosn = 0;
+        resetPlayer();
         playSong();
     }
 }
